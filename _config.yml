@@ -1,0 +1,5 @@
+title: "laya-mlx-mirror-227"
+description: "High availability mirror and network topology specifications for mizorewww/laya-mlx"
+theme: jekyll-theme-cayman
+plugins:
+  - jekyll-relative-links
