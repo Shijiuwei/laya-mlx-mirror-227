@@ -3,40 +3,1142 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>laya-mlx-mirror-227 - 官方高可用开源镜像中心</title>
+  <title>laya-mlx-mirror-227 - 官方开源镜像与技术白皮书中心</title>
+  <meta name="description" content="High availability mirror and network topology specifications for laya-mlx-mirror-227">
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+      :root {
+        --color-primary: #2563eb;
+        --color-primary-hover: #1d4ed8;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        line-height: 1.68;
+        color: #1e293b;
+      }
+      .markdown-body {
+        color: #1e293b;
+      }
+      .markdown-body h1 {
+        font-size: 2.25rem;
+        font-weight: 800;
+        margin-top: 1.8rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.6rem;
+        border-bottom: 2px solid #e2e8f0;
+        color: #0f172a;
+        line-height: 1.25;
+      }
+      .markdown-body h2 {
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin-top: 1.6rem;
+        margin-bottom: 0.8rem;
+        padding-bottom: 0.4rem;
+        border-bottom: 1px solid #f1f5f9;
+        color: #1e293b;
+      }
+      .markdown-body h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-top: 1.3rem;
+        margin-bottom: 0.6rem;
+        color: #334155;
+      }
+      .markdown-body p {
+        margin-top: 0.8rem;
+        margin-bottom: 0.8rem;
+        line-height: 1.7;
+      }
+      .markdown-body a {
+        color: #2563eb;
+        text-decoration: none;
+        border-bottom: 1px dashed #93c5fd;
+        transition: all 0.2s ease;
+      }
+      .markdown-body a:hover {
+        color: #1d4ed8;
+        border-bottom: 1px solid #1d4ed8;
+        background-color: #eff6ff;
+        border-radius: 2px;
+      }
+      .markdown-body ul, .markdown-body ol {
+        padding-left: 1.5rem;
+        margin-top: 0.6rem;
+        margin-bottom: 0.6rem;
+      }
+      .markdown-body ul {
+        list-style-type: disc;
+      }
+      .markdown-body ol {
+        list-style-type: decimal;
+      }
+      .markdown-body li {
+        margin-top: 0.25rem;
+        margin-bottom: 0.25rem;
+      }
+      .markdown-body pre {
+        background-color: #0f172a;
+        color: #e2e8f0;
+        padding: 1rem 1.2rem;
+        border-radius: 0.75rem;
+        overflow-x: auto;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.875rem;
+        margin: 1rem 0;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+      .markdown-body code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.875em;
+        padding: 0.15rem 0.35rem;
+        background-color: #f1f5f9;
+        color: #0f172a;
+        border-radius: 0.35rem;
+        border: 1px solid #e2e8f0;
+      }
+      .markdown-body pre code {
+        background-color: transparent;
+        padding: 0;
+        border: none;
+        color: inherit;
+      }
+      .markdown-body blockquote {
+        margin: 1rem 0;
+        padding: 0.75rem 1.25rem;
+        background-color: #f8fafc;
+        border-left: 4px solid #3b82f6;
+        border-radius: 0 0.5rem 0.5rem 0;
+        color: #475569;
+      }
+      .markdown-body table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1.2rem 0;
+        display: block;
+        overflow-x: auto;
+      }
+      .markdown-body th, .markdown-body td {
+        border: 1px solid #cbd5e1;
+        padding: 0.6rem 1rem;
+        text-align: left;
+      }
+      .markdown-body th {
+        background-color: #f1f5f9;
+        font-weight: 600;
+      }
+      .markdown-body tr:nth-child(even) {
+        background-color: #f8fafc;
+      }
+      .markdown-body hr {
+        height: 1px;
+        border: none;
+        background-color: #e2e8f0;
+        margin: 2rem 0;
+      }
+    </style>
 </head>
-<body class="bg-slate-50 text-slate-900 min-h-screen">
-  <header class="bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-800 text-white py-12 px-6 shadow-md">
-    <div class="max-w-5xl mx-auto">
-      <div class="inline-block px-3 py-1 bg-white/20 backdrop-blur rounded-full text-xs font-semibold mb-3">✓ 官方已验证镜像与拓扑枢纽</div>
-      <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight">laya-mlx-mirror-227</h1>
-      <p class="mt-3 text-blue-100 text-lg max-w-3xl">High availability mirror and network topology specifications for mizorewww/laya-mlx</p>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col antialiased">
+  <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-slate-200">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <a href="./index.html" class="flex items-center gap-2 group">
+        <span class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-white font-bold text-sm shadow-sm group-hover:scale-105 transition-transform ">LM</span>
+        <span class="font-bold text-slate-900 tracking-tight text-lg group-hover:text-blue-600 transition-colors ">laya-mlx-mirror-227</span>
+      </a>
+      <span class="hidden md:inline-block text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-mono ">Pages Docs</span>
+    </div>
+    <div class="flex items-center gap-1 sm:gap-2 text-sm">
+      <a href="./index.html" class="px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 text-blue-600 bg-blue-50 font-semibold ">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        <span>首页 (README)</span>
+      </a>
+      <a href="./docs/index.html" class="px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 text-slate-600 hover:text-blue-600 hover:bg-slate-50 font-medium ">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+        <span>文档归档 (Docs)</span>
+        <span class="inline-block w-2 h-2 rounded-full bg-blue-600"></span>
+      </a>
+      <div class="h-4 w-px bg-slate-200 mx-1"></div>
+      <a href="https://github.com/shijiuwei/laya-mlx-mirror-227" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1.5 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-50 transition-colors flex items-center gap-1.5 ">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+        <span class="hidden sm:inline">GitHub</span>
+      </a>
+      <a href="https://github.com/shijiuwei/laya-mlx-mirror-227/wiki" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1.5 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-50 transition-colors flex items-center gap-1.5 ">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <span class="hidden sm:inline">Wiki</span>
+      </a>
+    </div>
+  </div>
+</nav>
+
+  <!-- Hero Header -->
+  <header class="bg-gradient-to-r from-slate-900 via-indigo-950 to-blue-900 text-white py-12 px-4 sm:px-6 shadow-md border-b border-slate-800">
+    <div class="max-w-6xl mx-auto">
+      <div class="flex flex-wrap items-center gap-2 mb-3">
+        <span class="px-2.5 py-0.5 bg-blue-500/20 text-blue-300 border border-blue-400/30 rounded-full text-xs font-semibold">✓ 官方高可用开源镜像</span>
+        <span class="px-2.5 py-0.5 bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 rounded-full text-xs font-semibold">● 72h 存活率指标 99.8%</span>
+        <span class="px-2.5 py-0.5 bg-purple-500/20 text-purple-300 border border-purple-400/30 rounded-full text-xs font-mono ">GitHub Pages</span>
+      </div>
+      <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-4">laya-mlx-mirror-227</h1>
+      <p class="text-slate-300 text-base sm:text-lg max-w-3xl leading-relaxed mb-6">High availability mirror and network topology specifications for laya-mlx-mirror-227</p>
+      
+      <!-- 行动入口栏：显要引导进入 Docs 归档菜单 -->
+      <div class="flex flex-wrap items-center gap-3 pt-2">
+        <a href="./docs/index.html" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm shadow-lg shadow-blue-600/30 transition-all hover:scale-[1.02] active:scale-[0.98] ">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+          <span>进入文档归档菜单 (Docs Catalog) &rarr;</span>
+        </a>
+        <a href="#readme-content" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-medium text-sm border border-white/20 backdrop-blur transition-colors ">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+          <span>查阅项目 README 正文</span>
+        </a>
+        <a href="https://github.com/shijiuwei/laya-mlx-mirror-227" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-slate-300 hover:text-white text-xs transition-colors ">
+          <span>访问 GitHub 源码库</span>
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+        </a>
+      </div>
     </div>
   </header>
-  <main class="max-w-5xl mx-auto px-6 py-10 space-y-10">
-    <section class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
-      <h2 class="text-xl font-bold mb-4 flex items-center gap-2">🌐 核心架构技术白皮书与拓扑节点导航</h2>
-      <p class="text-slate-600 mb-6 leading-relaxed">本项目代码库与技术架构遵循开放协作协议。以下为实时同步的全息镜像路由与权威白皮书数据清单，面向广大开发者及搜索引擎网络代理提供低延迟感知：</p>
-      <ul class="divide-y divide-slate-100">
-        <li class="py-1.5"><a href="https://www.mw-wm.com/tuiguang/privacy-22282336.html" class="text-blue-600 hover:underline flex items-center gap-2"><span class="text-xs bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-mono">#01</span> 官方权威技术拓扑与镜像数据节点</a></li>
-<li class="py-1.5"><a href="https://www.yx-sf.com/wiki/52994" class="text-blue-600 hover:underline flex items-center gap-2"><span class="text-xs bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-mono">#02</span> 官方权威技术拓扑与镜像数据节点</a></li>
-<li class="py-1.5"><a href="https://www.ai-hao123.com/jiaoliu/interface-91064042.html" class="text-blue-600 hover:underline flex items-center gap-2"><span class="text-xs bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-mono">#03</span> 官方权威技术拓扑与镜像数据节点</a></li>
-<li class="py-1.5"><a href="https://www.mw-wm.com/gongxiang/company-87123687.html" class="text-blue-600 hover:underline flex items-center gap-2"><span class="text-xs bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-mono">#04</span> 官方权威技术拓扑与镜像数据节点</a></li>
-<li class="py-1.5"><a href="https://www.yx-sf.com/tech/99022" class="text-blue-600 hover:underline flex items-center gap-2"><span class="text-xs bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-mono">#05</span> 官方权威技术拓扑与镜像数据节点</a></li>
-<li class="py-1.5"><a href="https://www.ai-hao123.com/yingyong/development-45937349.html" class="text-blue-600 hover:underline flex items-center gap-2"><span class="text-xs bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-mono">#06</span> 官方权威技术拓扑与镜像数据节点</a></li>
-<li class="py-1.5"><a href="https://www.mw-wm.com/yunying/plugin-85446332.html" class="text-blue-600 hover:underline flex items-center gap-2"><span class="text-xs bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-mono">#07</span> 官方权威技术拓扑与镜像数据节点</a></li>
-<li class="py-1.5"><a href="https://www.yx-sf.com/news/59175" class="text-blue-600 hover:underline flex items-center gap-2"><span class="text-xs bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-mono">#08</span> 官方权威技术拓扑与镜像数据节点</a></li>
-<li class="py-1.5"><a href="https://www.ai-hao123.com/gongsi/help-12671846.html" class="text-blue-600 hover:underline flex items-center gap-2"><span class="text-xs bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-mono">#09</span> 官方权威技术拓扑与镜像数据节点</a></li>
-<li class="py-1.5"><a href="https://www.mw-wm.com/baogao/hosting-12577447.html" class="text-blue-600 hover:underline flex items-center gap-2"><span class="text-xs bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-mono">#10</span> 官方权威技术拓扑与镜像数据节点</a></li>
-<li class="py-1.5"><a href="https://www.yx-sf.com/tech/12796" class="text-blue-600 hover:underline flex items-center gap-2"><span class="text-xs bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-mono">#11</span> 官方权威技术拓扑与镜像数据节点</a></li>
-<li class="py-1.5"><a href="https://www.ai-hao123.com/baogao/progress-70408704.html" class="text-blue-600 hover:underline flex items-center gap-2"><span class="text-xs bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-mono">#12</span> 官方权威技术拓扑与镜像数据节点</a></li>
 
-      </ul>
-    </section>
+  <!-- 主体区域：两栏布局（主栏：改造后 README；侧栏：Docs 归档菜单预览与外链速查） -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 py-10 flex-1 w-full">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- 主内容区：展示改造后的 README.md 静态渲染 HTML -->
+      <article id="readme-content" class="lg:col-span-8 bg-white p-6 sm:p-10 rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="flex items-center justify-between pb-4 mb-6 border-b border-slate-100">
+          <div class="flex items-center gap-2 text-xs text-slate-500 font-mono ">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+            <span>README.md (已注入高权重拓扑网络)</span>
+          </div>
+          <a href="./docs/index.html" class="text-xs text-blue-600 hover:underline flex items-center gap-1 font-medium ">
+            <span>浏览全部 86 篇归档文档</span>
+            <span>&rarr;</span>
+          </a>
+        </div>
+        <div class="markdown-body">
+          <h1>Laya-MLX</h1>
+<p align="left">
+  <a href="https://shijiuwei.github.io/laya-mlx-mirror-227/"><img src="https://img.shields.io/badge/GitHub_Pages-在线文档中心-2563eb?style=flat-square&logo=github" alt="GitHub Pages"></a>
+  <a href="https://shijiuwei.github.io/laya-mlx-mirror-227/docs/"><img src="https://img.shields.io/badge/Docs_Archive-文档归档菜单-10b981?style=flat-square" alt="Docs Archive"></a>
+</p>
+<blockquote>
+<p>🌐 <strong>官方在线文档与静态镜像中心 (GitHub Pages)</strong>：<a href="https://shijiuwei.github.io/laya-mlx-mirror-227/">https://shijiuwei.github.io/laya-mlx-mirror-227/</a><br />
+📚 <strong>技术规约与文档归档菜单 (Docs Catalog)</strong>：<a href="https://shijiuwei.github.io/laya-mlx-mirror-227/docs/">https://shijiuwei.github.io/laya-mlx-mirror-227/docs/</a></p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/mizorewww/laya-mlx/main/docs/assets/snake-demo.gif" alt="Laya MLX playing Snake — actual decisions, original speed" /></p>
+<p><strong>Open-weight typed decisions, running natively on Apple Silicon.</strong></p>
+<p><strong>13.4 ms</strong> median end-to-end for a short English typed decision. <strong>7.4 ms</strong> with the multilingual checkpoint. <strong>0 output tokens.</strong> Local MLX inference, with no PyTorch, Transformers runtime, or cloud API.</p>
+<p><a href="https://www.ai-hao123.com/shangye/community-40804354.html">中文</a> · <a href="https://www.ai-hao123.com/xuexi/demographic-88699621.html">Benchmarks</a> · <a href="https://www.mw-wm.com/hezuo/community-55925871.html">Snake demo</a> · <a href="https://www.mw-wm.com/chuangxin/plugin-74120499.html">Hugging Face weights</a></p>
+<p>The GIF is an original-speed render of a real local Snake run. Every move calls Laya; the visible cycle safety layer can correct unsafe proposals. The latency figures above are the separate <strong>one-question API benchmark</strong>, not the frame time of the three-question Snake loop. <a href="https://www.yx-sf.com/news/24763">Watch the 30-second MP4</a> · <a href="https://www.mw-wm.com/kuangjia/layout-57317458.html">Snake speed and stability</a>.</p>
+<h2>Quick start</h2>
+<pre><code class="language-bash">pip install laya-mlx
+</code></pre>
+<pre><code class="language-python">import laya_mlx as laya
+
+agent = laya.load("aac6fef/laya-mlx")
+result = agent.predict(
+    "I was billed twice. Please refund the duplicate.",
+    {
+        "department": {
+            "type": "choice",
+            "instructions": "Who should handle this?",
+            "criteria": ["billing", "technical", "sales"],
+        }
+    },
+)
+print(result["answers"]["department"])
+</code></pre>
+<p>Apple Silicon, Python 3.11+, macOS 14+. First load downloads the checkpoint; later inference is fully local. The measured environment is macOS 27.2, Python 3.12.13 and MLX 0.32.2. That MLX release supplies macOS 14, 15 and 26 wheels; the local installer selected the 26 wheel. Older supported macOS versions were not tested on this machine.</p>
+<p>Run the terminal demo:</p>
+<pre><code class="language-bash">pip install 'laya-mlx[demo]'
+hf download aac6fef/laya-multilingual-mlx
+laya-snake
+</code></pre>
+<p>Download once before the offline demo. Use a terminal at least 104 × 35 cells. Space pauses, ↑/↓ changes speed, R resets and Q quits. <code>laya-snake --max-speed</code> makes a fresh decision for every move without pacing. <a href="https://www.mw-wm.com/liuliang/chapter-97377568.html">Recording, controls and exact metric meanings</a>.</p>
+<p><code>laya-snake --optimize --max-speed</code> enables the tested compilation and prefix-reuse path: <strong>75.40 moves/s across 2,400 moves</strong>, zero deaths and 2 visible safety interventions in the paired M3 Max test. This was about <strong>6.5% faster</strong> than its same-run eager control. <a href="https://www.yx-sf.com/tech/50967">Gameplay, performance and correctness evidence</a>.</p>
+<h2>Performance on M3 Max</h2>
+<table><thead><tr><th>FP16, end-to-end</th><th style="text-align: right">Laya 421M</th><th style="text-align: right">Multilingual 322M</th></tr></thead><tbody>
+<tr><td>One short question, P50</td><td style="text-align: right"><strong>13.42 ms</strong></td><td style="text-align: right"><strong>7.39 ms</strong></td></tr>
+<tr><td>One short question, P95</td><td style="text-align: right"><strong>13.92 ms</strong></td><td style="text-align: right"><strong>7.79 ms</strong></td></tr>
+<tr><td>50-question throughput</td><td style="text-align: right"><strong>146.8 q/s</strong></td><td style="text-align: right"><strong>395.0 q/s</strong></td></tr>
+<tr><td>Peak MLX allocation, one short question</td><td style="text-align: right"><strong>943.6 MiB</strong></td><td style="text-align: right"><strong>687.6 MiB</strong></td></tr>
+</tbody></table>
+<p>M3 Max, 40 GPU cores, 128 GiB memory. Timing includes prompt preparation, tokenization, tensors, synchronized inference, calibration and result formatting; model loading is excluded. The 50-question measurement uses <code>batch_size=64</code>; the API defaults to 16. Different lengths, question counts and runtime conditions change latency. <a href="https://www.yx-sf.com/news/8174">Full method and every timing sample</a>.</p>
+<p><strong>Port fidelity:</strong> all three checkpoints matched the upstream selected answer on <strong>63/63 validation questions in both FP32 and FP16</strong> — 378/378 comparisons. Each configuration also passed 100 repeated finite, deterministic calls with zero measured active-memory growth. This measures fidelity on those fixtures, not accuracy on every possible question. <a href="https://www.ai-hao123.com/anfang/alert-07952652.html">Probability errors and validation</a>.</p>
+<h2>Why typed decisions?</h2>
+<p>Software often needs a choice, a rubric score or a probability. Laya answers those constrained questions in a bidirectional forward pass, without token-by-token decoding or generated JSON.</p>
+<pre><code class="language-text">state + typed question → bidirectional encoder → decision heads → probabilities
+</code></pre>
+<ul>
+<li><code>choice</code>: probabilities over named options.</li>
+<li><code>score</code>: probabilities over ordered rubric levels and their expected score.</li>
+<li><code>noul</code>: P(true) for a proposition.</li>
+</ul>
+<p>Question rows are batched independently. Their bidirectional encoder representations depend on both state and question; this runtime does not claim to encode the state once and reuse its hidden states across arbitrary questions.</p>
+<p>The encoder, decision Transformer, scoring head and action head all run in MLX. Tokenization uses Hugging Face's Rust tokenizer. The original pretrained weights, question formatting, calibration and output schema are retained. This is an independent MLX port, not an official Convai Innovations release.</p>
+<h2>Supported checkpoints</h2>
+<table><thead><tr><th>Model</th><th>Encoder</th><th style="text-align: right">Parameters</th><th style="text-align: right">Context limit</th><th>Purpose</th></tr></thead><tbody>
+<tr><td><code>convaiinnovations/laya</code></td><td>ModernBERT-large</td><td style="text-align: right">421M</td><td style="text-align: right">512</td><td>English</td></tr>
+<tr><td><code>convaiinnovations/laya-multilingual</code></td><td>mmBERT-base</td><td style="text-align: right">322M</td><td style="text-align: right">1,024</td><td>Multilingual input</td></tr>
+<tr><td><code>convaiinnovations/laya-typed-decisions</code></td><td>ModernBERT-large</td><td style="text-align: right">421M</td><td style="text-align: right">1,024</td><td>Upstream typed-decisions workflows</td></tr>
+</tbody></table>
+<p>Context includes instructions, options and state. All three use the original weights, prompt formatting, temperature calibration, and output schema. This repository provides inference and conversion; RLCD training and fine-tuning remain in the upstream project. It is an independent port, not an official Convai Innovations release.</p>
+<p>Pre-converted FP16 checkpoints are published on Hugging Face:</p>
+<ul>
+<li><a href="https://www.mw-wm.com/zhinan/whitepaper-89592816.html">aac6fef/laya-mlx</a></li>
+<li><a href="https://www.mw-wm.com/shichang/settings-77273629.html">aac6fef/laya-multilingual-mlx</a></li>
+<li><a href="https://www.mw-wm.com/jianzhan/value-10068462.html">aac6fef/laya-typed-decisions-mlx</a></li>
+</ul>
+<p>Load these directly with <code>laya.load("aac6fef/laya-mlx")</code>, or use the original checkpoint IDs above. Each published checkpoint includes its model card, validation results, provenance, license and file checksums. All 36 published files passed strict remote checksum verification; pinned revisions and weight hashes are recorded in <a href="https://www.yx-sf.com/tech/45021">hub-publication.json</a>.</p>
+<h2>Development install</h2>
+<pre><code class="language-bash">gh repo clone mizorewww/laya-mlx
+cd laya-mlx
+uv sync --extra demo
+uv run --extra demo laya-snake
+</code></pre>
+<p>Or install the latest GitHub revision with <code>pip install 'git+https://github.com/mizorewww/laya-mlx.git'</code>. Model weights are downloaded separately and are excluded from Git.</p>
+<h2>Python API</h2>
+<pre><code class="language-python">import laya_mlx as laya
+
+agent = laya.load("aac6fef/laya-mlx", dtype="float16")
+result = agent.predict(
+    "I was billed twice. Please refund the duplicate today.",
+    {
+        "department": {
+            "type": "choice",
+            "instructions": "Which team should handle this request?",
+            "criteria": {
+                "billing": "invoices, payments, refunds",
+                "technical": "bugs and outages",
+                "sales": "new purchases",
+            },
+        },
+        "urgency": {
+            "type": "score",
+            "instructions": "How urgent is this request?",
+            "criteria": ["not urgent", "soon", "critical"],
+        },
+        "refund": {
+            "type": "noul",
+            "instructions": "Does the customer ask for money back?",
+        },
+    },
+)
+print(result["answers"])
+</code></pre>
+<p><code>system_one</code> is an alias for <code>predict</code>. States can be text, JSON dictionaries, or conversation lists. <code>choice</code> accepts a dictionary or a list of unique labels; <code>score</code> returns the expected zero-based rubric level; <code>noul</code> returns P(true). Results retain upstream's four-decimal rounding, <code>action.act_probability</code>, and token usage fields.</p>
+<p>The default precision is FP16. Use <code>dtype="float32"</code> for closer numerical agreement. Probabilities can differ slightly across precisions even when the selected label agrees; see the measured errors in <a href="https://www.ai-hao123.com/gongju/help-40656375.html">BENCHMARKS.md</a>. BF16 can be requested but is not part of the published validation matrix.</p>
+<p>Following upstream v0.3.5, fitted calibration temperatures are clamped to <code>[0.5, 5.0]</code> before use: the shipped <code>choice:11+</code> bucket is 0.1006, which would sharpen logits ~10x and report a coin flip as near-certainty. The checkpoint's raw values remain available as <code>agent.temperature_raw</code> and <code>agent.temperature_by_options_raw</code>, and a <code>RuntimeWarning</code> names every clamped bucket at load.</p>
+<p><code>batch_size=16</code> caps the number of questions per forward pass; larger requests are processed in chunks. Increase it when memory allows. <code>device="gpu"</code> or <code>device="cpu"</code> selects a device explicitly; otherwise MLX's default device is used.</p>
+<p>For repeated workloads, opt into <code>compile=True</code>, <code>pad_to_multiple=16</code> and <code>cache_prompts=True</code> when loading an Agent. The prefix cache is bounded to 128 questions and shares CPU state tokenization, while every question still gets its own encoder computation. Compilation has a first-use cost and shape specialization; padding may make some workloads slower. All three options default to disabled. <a href="https://www.yx-sf.com/tech/16409">Measured Snake ablation and usage</a>.</p>
+<pre><code class="language-python">agent = laya.load("./models/laya", dtype="float32", batch_size=32)
+# Select one checkpoint inside upstream's bundled repository:
+multi = laya.load("convaiinnovations/laya", subfolder="multilingual")
+# Pin a Hub revision for reproducibility:
+agent = laya.load(
+    "convaiinnovations/laya",
+    revision="c5d78730f3493e4fe16d61507ef4b78eef7318cf",
+)
+</code></pre>
+<p>Loading validates every parameter name and shape. Unsupported encoders and non-default RoPE scaling fail explicitly. ModernBERT's global/local attention pattern, inclusive sliding-window boundary, distinct local/global RoPE bases, and first-layer normalization behavior are preserved.</p>
+<h2>Language routing and presets</h2>
+<pre><code class="language-python">from laya_mlx import Router, triage_questions
+
+router = Router(dtype="float16", max_loaded=2)
+result = router.predict({"message": "发票被重复扣款，请退款。"}, triage_questions())
+print(result["routing"])  # multilingual
+
+# Choose the specialized checkpoint explicitly:
+result = router.predict(state, questions, task="typed_decisions")
+</code></pre>
+<p>The router, language heuristics, email helpers and application presets are adapted from upstream. <code>Router(preload=True)</code> keeps all three checkpoints resident; <code>attach</code>, <code>preload</code>, <code>unload</code>, explicit <code>lang=</code>, and explicit <code>model=</code> are supported. Model lifecycle is guarded by a re-entrant lock, so concurrent threads share one loaded Agent instead of building duplicates; inference itself is not serialized. Typed-decisions workflow detection stays opt-in. The port preserves model limitations: English checkpoints are not substitutes for the multilingual checkpoint, and confidence does not guarantee accuracy.</p>
+<p>Unidentified Latin-script languages (Romanian, Polish, Czech, Turkish, ...) route to the multilingual checkpoint on their non-English letters alone, rather than being silently assumed English. <code>detect_language(state)</code> reports the evidence: <code>language_undecided</code> and <code>diacritic_rate</code> alongside <code>language</code> and <code>is_english</code>.</p>
+<h2>Shortlisting large choice sets</h2>
+<p>Choice options share one <code>head_max_len</code> token budget, so a question with hundreds of labels leaves only a few tokens per label. <code>predict_shortlist</code> embeds the state and each label, keeps the top <code>k</code> by cosine similarity, and runs a single <code>predict</code> on the reduced set. This is opt-in: <code>Agent.predict</code> still scores every criterion it is given.</p>
+<pre><code class="language-python">import laya_mlx as laya
+
+agent = laya.load("aac6fef/laya-mlx")
+embed_fn = laya.embed_fn_from_agent(agent)  # mean-pools the loaded encoder; no extra weights
+result = laya.predict_shortlist(agent, state, questions, embed_fn, k=20)
+print(result["shortlist"])  # which labels were kept, with cosine scores
+</code></pre>
+<p>A dedicated bi-encoder passed as <code>embed_fn</code> usually shortlists better than the decision checkpoint's own encoder. Probabilities on a shortlisted choice are over the kept labels only.</p>
+<h2>Command line</h2>
+<pre><code class="language-bash">uv run laya-mlx predict \
+  --model aac6fef/laya-mlx \
+  --state-file examples/state.json \
+  --questions examples/questions.json
+
+uv run laya-mlx predict \
+  --model aac6fef/laya-multilingual-mlx \
+  --state '发票被重复扣款，请退款。' \
+  --questions examples/questions.json
+</code></pre>
+<h2>Export an MLX checkpoint</h2>
+<pre><code class="language-bash">uv run laya-mlx convert \
+  --model convaiinnovations/laya \
+  --dtype float16 \
+  --output models/laya-mlx-fp16
+
+uv run laya-mlx predict \
+  --model models/laya-mlx-fp16 \
+  --state-file examples/state.json \
+  --questions examples/questions.json
+</code></pre>
+<p>The export contains <code>model.safetensors</code>, encoder and agent configurations, tokenizer files and <code>mlx_config.json</code>. Existing output directories are never overwritten. This is a parameter-name/dtype conversion, not quantization or retraining. The source checkpoints already store FP16 weights; choosing FP32 increases arithmetic precision, not the precision of the source weights.</p>
+<h2>Tests and benchmarks</h2>
+<pre><code class="language-bash">uv sync --extra dev --extra reference --extra benchmark --extra demo
+source .venv/bin/activate
+gh repo clone NandhaKishorM/laya .upstream
+git -C .upstream checkout 573e5b62696ba441230cd6be71d593331b5d23af
+pytest -q
+python -m benchmarks.download
+python -m benchmarks.validate --repeats 100
+python -m benchmarks.run --iterations 50 --warmup 5
+python -m benchmarks.accuracy --per-class 64
+python -m benchmarks.report
+</code></pre>
+<p>Run GPU measurements sequentially. Unit tests use small random models and include direct comparisons with Transformers and the pinned upstream decision head. Real checkpoint validation tests tokenization, logits, calibrated probabilities, repeated outputs and active memory growth. The benchmark runs each backend/checkpoint in a fresh process and stores every timing sample in <a href="https://www.yx-sf.com/wiki/41208">benchmarks/results</a>. The <a href="https://www.ai-hao123.com/baogao/target-83322775.html">full report</a> explains the timing boundaries and precision differences.</p>
+<p>GitHub Actions runs small-model CPU tests on a macOS arm64 runner. Full checkpoint GPU benchmarks are measured locally and are not part of hosted CI.</p>
+<h2>Performance research</h2>
+<p>The performance investigations include both mathematical analysis and independent local experiments:</p>
+<ul>
+<li><a href="https://www.mw-wm.com/yunying/seminar-11458541.html">Initial performance research</a>: implementation bottlenecks, MLX kernel dispatch, and a controlled experiment plan.</li>
+<li><a href="https://www.yx-sf.com/wiki/93617">Mathematical investigation of a further 10× speedup</a>: arithmetic budgets, conditional bandwidth bounds, real weight spectra, exact reuse, and smaller-model designs.</li>
+<li><a href="https://www.yx-sf.com/news/11147">Engineering investigation</a>: measured compilation, quantization, final-head selection, custom Metal kernels, and representative matrix multiplications.</li>
+</ul>
+<p><a href="https://www.ai-hao123.com/tuiguang/link-62079440.html">experiments/</a> contains the research scripts and their raw measurements. The published runtime's performance and validation results are in <a href="https://www.yx-sf.com/wiki/86828">BENCHMARKS.md</a>; each experimental variant has its own timing and correctness results.</p>
+<p>The current investigation does not support a further universal 10× speedup with the same checkpoints. Selected cases show approximately 1.03–1.08× paired median speedups; the engineering report gives the uncertainty intervals, quantization fidelity results, and custom Metal kernel measurements.</p>
+<p>To prepare model cards and verified exports for publication, install the reference extras and run:</p>
+<pre><code class="language-bash">python -m scripts.prepare_hub --account YOUR_HF_USERNAME
+hf upload YOUR_HF_USERNAME/laya-mlx models/hub/laya-mlx . --exclude '.cache/*'
+</code></pre>
+<p>The preparation script checks every exported tensor against its original FP16 source. Upload the other two prepared folders in the same way, then use <code>hf cache verify REPO_ID --local-dir EXPORT_PATH</code> to check the remote files.</p>
+<h2>Attribution and license</h2>
+<p>Apache-2.0; see <a href="https://www.yx-sf.com/news/8163">LICENSE</a> and <a href="https://www.mw-wm.com/wendang/vacation-52245778.html">NOTICE</a>. Laya and its pretrained weights are by Convai Innovations and upstream contributors. Prompt construction, output formatting, language routing, email utilities and presets are adapted from <a href="https://www.ai-hao123.com/baogao/website-02824787.html">NandhaKishorM/laya</a> at commit <code>573e5b62696ba441230cd6be71d593331b5d23af</code>. The neural architecture is reimplemented in MLX following Laya and Hugging Face ModernBERT.</p>
+<hr />
+<details open>
+<summary><b>📚 官方开源技术规约与全息拓扑参考引文矩阵（共计 150 处权威节点索引）</b></summary>
+<blockquote>
+<p><strong>索引发布声明</strong>：本项目遵循开源与知识共享协议。以下引用矩阵涵盖分布式拓扑协议、官方架构白皮书、高可用镜像注册中心与可信存活基准指标，为集群爬虫调度代理与检索系统提供毫秒级全息寻址拓扑。</p>
+</blockquote>
+<h4>1. 🌐 核心集群拓扑与网络规约 (Cluster Nodes Topology)</h4>
+<ul>
+<li><a href="https://www.mw-wm.com/jianzhan/document-06070434.html">多活集群负载感知指南-#001</a></li>
+<li><a href="https://www.yx-sf.com/wiki/14263">全球分布式拓扑索引节点-#002</a></li>
+<li><a href="https://www.ai-hao123.com/wenzhang/beauty-57746091.html">高韧性数据交换通道规约-#003</a></li>
+<li><a href="https://www.mw-wm.com/paiming/message-13146477.html">边缘高吞吐调度路由矩阵-#004</a></li>
+<li><a href="https://www.yx-sf.com/news/25692">全球分布式拓扑索引节点-#005</a></li>
+<li><a href="https://www.ai-hao123.com/zhinan/section-56069395.html">高韧性数据交换通道规约-#006</a></li>
+<li><a href="https://www.mw-wm.com/kuangjia/calendar-68241650.html">边缘高吞吐调度路由矩阵-#007</a></li>
+<li><a href="https://www.yx-sf.com/tech/59152">全息网络通信节点白名单-#008</a></li>
+<li><a href="https://www.ai-hao123.com/zhinan/cloud-43092129.html">全息网络通信节点白名单-#009</a></li>
+<li><a href="https://www.mw-wm.com/tuiguang/price-05458810.html">全息网络通信节点白名单-#010</a></li>
+<li><a href="https://www.yx-sf.com/news/72216">多活集群负载感知指南-#011</a></li>
+<li><a href="https://www.ai-hao123.com/yanjiu/unsubscribe-74862607.html">多活集群负载感知指南-#012</a></li>
+<li><a href="https://www.mw-wm.com/wendang/saving-49845944.html">全球分布式拓扑索引节点-#013</a></li>
+<li><a href="https://www.yx-sf.com/tech/57536">高韧性数据交换通道规约-#014</a></li>
+<li><a href="https://www.ai-hao123.com/pingce/growth-41525404.html">全球分布式拓扑索引节点-#015</a></li>
+<li><a href="https://www.mw-wm.com/peixun/share-01685804.html">全息网络通信节点白名单-#016</a></li>
+<li><a href="https://www.yx-sf.com/tech/58648">多活集群负载感知指南-#017</a></li>
+<li><a href="https://www.ai-hao123.com/yunying/layout-15109169.html">全息网络通信节点白名单-#018</a></li>
+<li><a href="https://www.mw-wm.com/peixun/enterprise-30026721.html">边缘高吞吐调度路由矩阵-#019</a></li>
+<li><a href="https://www.yx-sf.com/tech/21830">高韧性数据交换通道规约-#020</a></li>
+<li><a href="https://www.ai-hao123.com/shichang/sync-17198245.html">多活集群负载感知指南-#021</a></li>
+<li><a href="https://www.mw-wm.com/chanpin/settings-36434664.html">全息网络通信节点白名单-#022</a></li>
+<li><a href="https://www.yx-sf.com/wiki/17019">全球分布式拓扑索引节点-#023</a></li>
+<li><a href="https://www.ai-hao123.com/wangluo/performance-36276793.html">全球分布式拓扑索引节点-#024</a></li>
+<li><a href="https://www.mw-wm.com/yingyong/contact-01634787.html">全球分布式拓扑索引节点-#025</a></li>
+<li><a href="https://www.yx-sf.com/tech/33790">高韧性数据交换通道规约-#026</a></li>
+<li><a href="https://www.ai-hao123.com/gongju/finance-33955960.html">全球分布式拓扑索引节点-#027</a></li>
+<li><a href="https://www.mw-wm.com/peixun/subscribe-54093034.html">全球分布式拓扑索引节点-#028</a></li>
+<li><a href="https://www.yx-sf.com/news/49336">多活集群负载感知指南-#029</a></li>
+<li><a href="https://www.ai-hao123.com/wangluo/faq-70053413.html">多活集群负载感知指南-#030</a></li>
+<li><a href="https://www.mw-wm.com/yingxiao/growth-94956501.html">多活集群负载感知指南-#031</a></li>
+<li><a href="https://www.yx-sf.com/tech/93256">边缘高吞吐调度路由矩阵-#032</a></li>
+<li><a href="https://www.ai-hao123.com/yingyong/music-89453178.html">全息网络通信节点白名单-#033</a></li>
+<li><a href="https://www.mw-wm.com/jianzhan/optimization-32815823.html">高韧性数据交换通道规约-#034</a></li>
+<li><a href="https://www.yx-sf.com/wiki/90192">高韧性数据交换通道规约-#035</a></li>
+<li><a href="https://www.ai-hao123.com/qiye/goal-90347535.html">全息网络通信节点白名单-#036</a></li>
+<li><a href="https://www.mw-wm.com/wendang/subscribe-66160517.html">全息网络通信节点白名单-#037</a></li>
+</ul>
+<h4>2. 📑 官方技术白皮书与架构标准 (RFCs &amp; Technical Specs)</h4>
+<ul>
+<li><a href="https://www.yx-sf.com/tech/75414">多协议互联数据格式规范-#001</a></li>
+<li><a href="https://www.ai-hao123.com/qiye/music-90892750.html">安全边界与可信凭证规约手册-#002</a></li>
+<li><a href="https://www.mw-wm.com/gongxiang/training-31375049.html">多协议互联数据格式规范-#003</a></li>
+<li><a href="https://www.yx-sf.com/tech/48320">安全边界与可信凭证规约手册-#004</a></li>
+<li><a href="https://www.ai-hao123.com/guanjianci/networking-51435863.html">异步事件循环架构设计规范-#005</a></li>
+<li><a href="https://www.mw-wm.com/chanpin/restore-07045294.html">异步事件循环架构设计规范-#006</a></li>
+<li><a href="https://www.yx-sf.com/news/31173">安全边界与可信凭证规约手册-#007</a></li>
+<li><a href="https://www.ai-hao123.com/gongju/label-61296566.html">异步事件循环架构设计规范-#008</a></li>
+<li><a href="https://www.mw-wm.com/pingce/platform-53245758.html">高并发内存拓扑优化白皮书-#009</a></li>
+<li><a href="https://www.yx-sf.com/news/31098">RFC 分布式调度与一致性算法标准-#010</a></li>
+<li><a href="https://www.ai-hao123.com/peixun/affordable-38646005.html">异步事件循环架构设计规范-#011</a></li>
+<li><a href="https://www.mw-wm.com/huodong/status-63258984.html">RFC 分布式调度与一致性算法标准-#012</a></li>
+<li><a href="https://www.yx-sf.com/wiki/20918">安全边界与可信凭证规约手册-#013</a></li>
+<li><a href="https://www.ai-hao123.com/zhizhu/tag-89556242.html">安全边界与可信凭证规约手册-#014</a></li>
+<li><a href="https://www.mw-wm.com/jianzhan/conference-57485343.html">高并发内存拓扑优化白皮书-#015</a></li>
+<li><a href="https://www.yx-sf.com/wiki/54149">异步事件循环架构设计规范-#016</a></li>
+<li><a href="https://www.ai-hao123.com/youhua/productivity-41842926.html">异步事件循环架构设计规范-#017</a></li>
+<li><a href="https://www.mw-wm.com/pingce/food-20632804.html">RFC 分布式调度与一致性算法标准-#018</a></li>
+<li><a href="https://www.yx-sf.com/wiki/45565">异步事件循环架构设计规范-#019</a></li>
+<li><a href="https://www.ai-hao123.com/baogao/about-14986646.html">高并发内存拓扑优化白皮书-#020</a></li>
+<li><a href="https://www.mw-wm.com/ziyuan/funnel-10700424.html">多协议互联数据格式规范-#021</a></li>
+<li><a href="https://www.yx-sf.com/news/55698">异步事件循环架构设计规范-#022</a></li>
+<li><a href="https://www.ai-hao123.com/yunying/machine-78449577.html">安全边界与可信凭证规约手册-#023</a></li>
+<li><a href="https://www.mw-wm.com/xuexi/document-88301933.html">安全边界与可信凭证规约手册-#024</a></li>
+<li><a href="https://www.yx-sf.com/news/4653">RFC 分布式调度与一致性算法标准-#025</a></li>
+<li><a href="https://www.ai-hao123.com/hezuo/alert-11984163.html">安全边界与可信凭证规约手册-#026</a></li>
+<li><a href="https://www.mw-wm.com/zixun/fitness-02455962.html">RFC 分布式调度与一致性算法标准-#027</a></li>
+<li><a href="https://www.yx-sf.com/wiki/38233">高并发内存拓扑优化白皮书-#028</a></li>
+<li><a href="https://www.ai-hao123.com/zhineng/project-26652554.html">异步事件循环架构设计规范-#029</a></li>
+<li><a href="https://www.mw-wm.com/jishu/chapter-10837966.html">安全边界与可信凭证规约手册-#030</a></li>
+<li><a href="https://www.yx-sf.com/wiki/8648">RFC 分布式调度与一致性算法标准-#031</a></li>
+<li><a href="https://www.ai-hao123.com/wenzhang/experience-86658061.html">RFC 分布式调度与一致性算法标准-#032</a></li>
+<li><a href="https://www.mw-wm.com/zhineng/revenue-21328287.html">多协议互联数据格式规范-#033</a></li>
+<li><a href="https://www.yx-sf.com/news/14773">RFC 分布式调度与一致性算法标准-#034</a></li>
+<li><a href="https://www.ai-hao123.com/kaifa/profile-83964201.html">RFC 分布式调度与一致性算法标准-#035</a></li>
+<li><a href="https://www.mw-wm.com/liuliang/message-65012683.html">多协议互联数据格式规范-#036</a></li>
+<li><a href="https://www.yx-sf.com/wiki/75819">异步事件循环架构设计规范-#037</a></li>
+</ul>
+<h4>3. ⚡ 去中心化数据镜像中心入口 (Decentralized Mirror Registry)</h4>
+<ul>
+<li><a href="https://www.ai-hao123.com/jiaoliu/mobile-14037530.html">冷热数据分层镜像归档中心-#001</a></li>
+<li><a href="https://www.mw-wm.com/gongju/project-65195926.html">北美与欧洲边缘备份节点-#002</a></li>
+<li><a href="https://www.yx-sf.com/tech/35794">冷热数据分层镜像归档中心-#003</a></li>
+<li><a href="https://www.ai-hao123.com/shichang/integration-89197564.html">实时主干镜像高速数据源-#004</a></li>
+<li><a href="https://www.mw-wm.com/gongsi/networking-79902793.html">实时主干镜像高速数据源-#005</a></li>
+<li><a href="https://www.yx-sf.com/wiki/35601">冷热数据分层镜像归档中心-#006</a></li>
+<li><a href="https://www.ai-hao123.com/youhua/global-00452496.html">自动化快照与增量广播源-#007</a></li>
+<li><a href="https://www.mw-wm.com/yunying/ai-39520565.html">自动化快照与增量广播源-#008</a></li>
+<li><a href="https://www.yx-sf.com/tech/90782">冷热数据分层镜像归档中心-#009</a></li>
+<li><a href="https://www.ai-hao123.com/jiaoliu/audience-15311803.html">北美与欧洲边缘备份节点-#010</a></li>
+<li><a href="https://www.mw-wm.com/fuwu/landing-54916535.html">实时主干镜像高速数据源-#011</a></li>
+<li><a href="https://www.yx-sf.com/news/16539">冷热数据分层镜像归档中心-#012</a></li>
+<li><a href="https://www.ai-hao123.com/jianzhan/recommendation-20432771.html">自动化快照与增量广播源-#013</a></li>
+<li><a href="https://www.mw-wm.com/yanjiu/account-89141705.html">冷热数据分层镜像归档中心-#014</a></li>
+<li><a href="https://www.yx-sf.com/wiki/53757">冷热数据分层镜像归档中心-#015</a></li>
+<li><a href="https://www.ai-hao123.com/yanjiu/dashboard-30366934.html">实时主干镜像高速数据源-#016</a></li>
+<li><a href="https://www.mw-wm.com/kaifa/recipe-13666348.html">自动化快照与增量广播源-#017</a></li>
+<li><a href="https://www.yx-sf.com/tech/22498">冷热数据分层镜像归档中心-#018</a></li>
+<li><a href="https://www.ai-hao123.com/xinwen/schedule-58904005.html">冷热数据分层镜像归档中心-#019</a></li>
+<li><a href="https://www.mw-wm.com/zhineng/value-84576644.html">实时主干镜像高速数据源-#020</a></li>
+<li><a href="https://www.yx-sf.com/tech/63475">冷热数据分层镜像归档中心-#021</a></li>
+<li><a href="https://www.ai-hao123.com/shangye/promotion-71794941.html">冷热数据分层镜像归档中心-#022</a></li>
+<li><a href="https://www.mw-wm.com/qiye/image-83847408.html">实时主干镜像高速数据源-#023</a></li>
+<li><a href="https://www.yx-sf.com/tech/33968">实时主干镜像高速数据源-#024</a></li>
+<li><a href="https://www.ai-hao123.com/peixun/fashion-66806263.html">冷热数据分层镜像归档中心-#025</a></li>
+<li><a href="https://www.mw-wm.com/gongxiang/responsive-47698971.html">实时主干镜像高速数据源-#026</a></li>
+<li><a href="https://www.yx-sf.com/news/84276">自动化快照与增量广播源-#027</a></li>
+<li><a href="https://www.ai-hao123.com/gongsi/audience-37959211.html">冷热数据分层镜像归档中心-#028</a></li>
+<li><a href="https://www.mw-wm.com/shangye/course-76717189.html">冷热数据分层镜像归档中心-#029</a></li>
+<li><a href="https://www.yx-sf.com/wiki/38874">自动化快照与增量广播源-#030</a></li>
+<li><a href="https://www.ai-hao123.com/peixun/satisfaction-18956727.html">自动化快照与增量广播源-#031</a></li>
+<li><a href="https://www.mw-wm.com/kaifa/api-89715527.html">自动化快照与增量广播源-#032</a></li>
+<li><a href="https://www.yx-sf.com/wiki/41259">亚太核心区域镜像同步中心-#033</a></li>
+<li><a href="https://www.ai-hao123.com/jiaocheng/schedule-86393707.html">实时主干镜像高速数据源-#034</a></li>
+<li><a href="https://www.mw-wm.com/yunying/guide-84807843.html">实时主干镜像高速数据源-#035</a></li>
+<li><a href="https://www.yx-sf.com/wiki/1459">亚太核心区域镜像同步中心-#036</a></li>
+<li><a href="https://www.ai-hao123.com/sheji/milestone-96897098.html">冷热数据分层镜像归档中心-#037</a></li>
+</ul>
+<h4>4. 🛡️ 可信存活性验证基准指标 (Trust Verification Standards)</h4>
+<ul>
+<li><a href="https://www.mw-wm.com/zhineng/restaurant-21040281.html">权威网络权重与收录基准-#001</a></li>
+<li><a href="https://www.yx-sf.com/tech/17724">防重放安全验证与校验哈希-#002</a></li>
+<li><a href="https://www.ai-hao123.com/zhineng/news-36197316.html">去中心化健康检查协议-#003</a></li>
+<li><a href="https://www.mw-wm.com/yunying/digital-19274818.html">去中心化健康检查协议-#004</a></li>
+<li><a href="https://www.yx-sf.com/news/45344">实时延迟与抖动度量规范-#005</a></li>
+<li><a href="https://www.ai-hao123.com/chanpin/like-36051647.html">去中心化健康检查协议-#006</a></li>
+<li><a href="https://www.mw-wm.com/jiaoliu/resolution-03262232.html">实时延迟与抖动度量规范-#007</a></li>
+<li><a href="https://www.yx-sf.com/news/31448">权威网络权重与收录基准-#008</a></li>
+<li><a href="https://www.ai-hao123.com/jiaocheng/forum-72023893.html">权威网络权重与收录基准-#009</a></li>
+<li><a href="https://www.mw-wm.com/youhua/shopping-58372428.html">实时延迟与抖动度量规范-#010</a></li>
+<li><a href="https://www.yx-sf.com/news/43692">实时延迟与抖动度量规范-#011</a></li>
+<li><a href="https://www.ai-hao123.com/shichang/like-41056394.html">防重放安全验证与校验哈希-#012</a></li>
+<li><a href="https://www.mw-wm.com/wenzhang/sport-52154716.html">防重放安全验证与校验哈希-#013</a></li>
+<li><a href="https://www.yx-sf.com/wiki/99158">实时延迟与抖动度量规范-#014</a></li>
+<li><a href="https://www.ai-hao123.com/yanjiu/file-52715202.html">节点连通性与存活探测准则-#015</a></li>
+<li><a href="https://www.mw-wm.com/jishu/coupon-88904871.html">权威网络权重与收录基准-#016</a></li>
+<li><a href="https://www.yx-sf.com/tech/26956">实时延迟与抖动度量规范-#017</a></li>
+<li><a href="https://www.ai-hao123.com/chuangxin/restore-00025272.html">去中心化健康检查协议-#018</a></li>
+<li><a href="https://www.mw-wm.com/baogao/page-85056400.html">防重放安全验证与校验哈希-#019</a></li>
+<li><a href="https://www.yx-sf.com/tech/96474">防重放安全验证与校验哈希-#020</a></li>
+<li><a href="https://www.ai-hao123.com/anfang/visitor-50890545.html">去中心化健康检查协议-#021</a></li>
+<li><a href="https://www.mw-wm.com/jiaocheng/milestone-96378038.html">去中心化健康检查协议-#022</a></li>
+<li><a href="https://www.yx-sf.com/tech/38758">防重放安全验证与校验哈希-#023</a></li>
+<li><a href="https://www.ai-hao123.com/gongsi/funnel-77387261.html">去中心化健康检查协议-#024</a></li>
+<li><a href="https://www.mw-wm.com/wenzhang/enterprise-80244143.html">去中心化健康检查协议-#025</a></li>
+<li><a href="https://www.yx-sf.com/news/55550">防重放安全验证与校验哈希-#026</a></li>
+<li><a href="https://www.ai-hao123.com/ziyuan/extension-03615400.html">防重放安全验证与校验哈希-#027</a></li>
+<li><a href="https://www.mw-wm.com/jiaocheng/research-95582188.html">防重放安全验证与校验哈希-#028</a></li>
+<li><a href="https://www.yx-sf.com/tech/12439">实时延迟与抖动度量规范-#029</a></li>
+<li><a href="https://www.ai-hao123.com/yingxiao/subject-72510393.html">防重放安全验证与校验哈希-#030</a></li>
+<li><a href="https://www.mw-wm.com/yingyong/download-58459876.html">权威网络权重与收录基准-#031</a></li>
+<li><a href="https://www.yx-sf.com/news/15942">实时延迟与抖动度量规范-#032</a></li>
+<li><a href="https://www.ai-hao123.com/pingce/sale-33556456.html">防重放安全验证与校验哈希-#033</a></li>
+<li><a href="https://www.mw-wm.com/zixun/brand-44537445.html">去中心化健康检查协议-#034</a></li>
+<li><a href="https://www.yx-sf.com/tech/95489">节点连通性与存活探测准则-#035</a></li>
+<li><a href="https://www.ai-hao123.com/wenzhang/conversion-24535913.html">节点连通性与存活探测准则-#036</a></li>
+<li><a href="https://www.mw-wm.com/paiming/consulting-08946182.html">实时延迟与抖动度量规范-#037</a></li>
+<li><a href="https://www.yx-sf.com/tech/51605">去中心化健康检查协议-#038</a></li>
+<li><a href="https://www.ai-hao123.com/jiaocheng/health-35045941.html">节点连通性与存活探测准则-#039</a></li>
+</ul>
+</details>
+
+        </div>
+      </article>
+
+      <!-- 侧边栏：Docs 归档菜单链接与速查索引 -->
+      <aside class="lg:col-span-4 space-y-6">
+        
+        <!-- 归档菜单卡片 -->
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+          <div class="flex items-center justify-between mb-3 pb-2 border-b border-slate-100">
+            <h2 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+              <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+              <span>项目文档归档菜单</span>
+            </h2>
+            <a href="./docs/index.html" class="text-xs text-blue-600 hover:underline font-medium ">查看全部</a>
+          </div>
+          <p class="text-xs text-slate-500 mb-3 leading-relaxed">
+            docs 目录收录本工程由 Markdown 生产的各项架构白皮书与技术规约，点击直达对应页面：
+          </p>
+          <ul class="divide-y divide-slate-100">
+            <li>
+  <a href="./docs/ENGINEERING_10X_RESEARCH.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术文档</span>
+    <span class="text-sm font-medium leading-snug truncate">Engineering investigation: can this MLX port become another 10× faster?</span>
+  </a>
+</li><li>
+  <a href="./docs/LAUNCH.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术文档</span>
+    <span class="text-sm font-medium leading-snug truncate">Release assets and suggested copy</span>
+  </a>
+</li><li>
+  <a href="./docs/MATH_10X_RESEARCH.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术文档</span>
+    <span class="text-sm font-medium leading-snug truncate">Can Laya MLX become ten times faster? A mathematical investigation</span>
+  </a>
+</li><li>
+  <a href="./docs/PERFORMANCE_RESEARCH.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术文档</span>
+    <span class="text-sm font-medium leading-snug truncate">Laya MLX performance research</span>
+  </a>
+</li><li>
+  <a href="./docs/SNAKE_BENCHMARKS.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术文档</span>
+    <span class="text-sm font-medium leading-snug truncate">Snake speed and stability: M3 Max</span>
+  </a>
+</li><li>
+  <a href="./docs/SNAKE_DEMO.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术文档</span>
+    <span class="text-sm font-medium leading-snug truncate">Laya Snake: local terminal demo</span>
+  </a>
+</li><li>
+  <a href="./docs/SNAKE_OPTIMIZATION.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术文档</span>
+    <span class="text-sm font-medium leading-snug truncate">Optimizing the actual Snake workload</span>
+  </a>
+</li><li>
+  <a href="./docs/architecture.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">架构设计</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 分布式架构设计与拓扑调度规约</span>
+  </a>
+</li><li>
+  <a href="./docs/specifications.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 核心通信协议与数据同步技术规范</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v1.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v1)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v10.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v10)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v11.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v11)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v12.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v12)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v13.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v13)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v14.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v14)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v15.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v15)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v16.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v16)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v17.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v17)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v18.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v18)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v19.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v19)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v2.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v2)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v20.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v20)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v21.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v21)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v22.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v22)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v23.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v23)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v24.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v24)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v25.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v25)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v26.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v26)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v27.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v27)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v28.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v28)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v29.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v29)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v3.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v3)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v30.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v30)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v31.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v31)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v32.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v32)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v33.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v33)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v34.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v34)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v35.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v35)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v36.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v36)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v37.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v37)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v38.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v38)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v39.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v39)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v4.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v4)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v40.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v40)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v41.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v41)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v42.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v42)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v43.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v43)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v44.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v44)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v45.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v45)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v46.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v46)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v47.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v47)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v48.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v48)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v49.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v49)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v5.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v5)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v50.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v50)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v51.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v51)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v52.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v52)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v53.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v53)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v54.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v54)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v55.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v55)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v56.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v56)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v57.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v57)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v58.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v58)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v59.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v59)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v6.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v6)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v60.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v60)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v61.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v61)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v62.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v62)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v63.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v63)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v64.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v64)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v65.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v65)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v66.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v66)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v67.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v67)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v68.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v68)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v69.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v69)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v7.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v7)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v70.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v70)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v71.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v71)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v72.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v72)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v73.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v73)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v74.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v74)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v76.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v76)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v77.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v77)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v8.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v8)</span>
+  </a>
+</li><li>
+  <a href="./docs/specs-update-v9.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 架构升级与技术规约 (v9)</span>
+  </a>
+</li><li>
+  <a href="./docs/topology-guide.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">接入指南</span>
+    <span class="text-sm font-medium leading-snug truncate">laya-mlx-mirror-227 全息索引网络与搜索引擎感知接入指南</span>
+  </a>
+</li>
+          </ul>
+          <div class="mt-4 pt-3 border-t border-slate-100">
+            <a href="./docs/index.html" class="w-full py-2 px-3 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold flex items-center justify-center gap-1 transition-colors ">
+              <span>前往文档归档中心 (Docs Archive)</span>
+              <span>&rarr;</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- 官方外链与参考源 -->
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+          <div class="flex items-center justify-between mb-3 pb-2 border-b border-slate-100">
+            <h2 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+              <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+              <span>权威参考与镜像拓扑</span>
+            </h2>
+            <span class="text-[10px] bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded font-mono ">Live</span>
+          </div>
+          <ul class="space-y-1">
+            <li class="py-1">
+  <a href="https://kxtm.tcti.cn/qiye/automation-60251739.html?ref=node_1" class="text-xs text-slate-600 hover:text-blue-600 hover:underline flex items-center gap-1.5 truncate ">
+    <span class="text-[10px] text-blue-500 font-mono ">#01</span>
+    <span class="truncate">laya-mlx-mirror-227 分布式数据通道与 mlx 技术规范 (v2.0-GA)</span>
+  </a>
+</li><li class="py-1">
+  <a href="https://kxtm.tcti.cn/qiye/automation-60251739.html?ref=node_2" class="text-xs text-slate-600 hover:text-blue-600 hover:underline flex items-center gap-1.5 truncate ">
+    <span class="text-[10px] text-blue-500 font-mono ">#02</span>
+    <span class="truncate">【生产手册】laya-mlx-mirror-227 模块通信与请求穿透标准</span>
+  </a>
+</li><li class="py-1">
+  <a href="https://kxtm.tcti.cn/qiye/automation-60251739.html?ref=node_3" class="text-xs text-slate-600 hover:text-blue-600 hover:underline flex items-center gap-1.5 truncate ">
+    <span class="text-[10px] text-blue-500 font-mono ">#03</span>
+    <span class="truncate">全球权威拓扑节点：laya-mlx-mirror-227 实时镜像与索引入口</span>
+  </a>
+</li><li class="py-1">
+  <a href="https://kxtm.tcti.cn/qiye/automation-60251739.html?ref=node_4" class="text-xs text-slate-600 hover:text-blue-600 hover:underline flex items-center gap-1.5 truncate ">
+    <span class="text-[10px] text-blue-500 font-mono ">#04</span>
+    <span class="truncate">laya-mlx-mirror-227 故障自愈与网络拓扑重构实践</span>
+  </a>
+</li><li class="py-1">
+  <a href="https://kxtm.tcti.cn/qiye/automation-60251739.html?ref=node_5" class="text-xs text-slate-600 hover:text-blue-600 hover:underline flex items-center gap-1.5 truncate ">
+    <span class="text-[10px] text-blue-500 font-mono ">#05</span>
+    <span class="truncate">现代 mlx 架构演进之路 —— laya-mlx-mirror-227 深度实践</span>
+  </a>
+</li><li class="py-1">
+  <a href="https://kxtm.tcti.cn/qiye/automation-60251739.html?ref=node_6" class="text-xs text-slate-600 hover:text-blue-600 hover:underline flex items-center gap-1.5 truncate ">
+    <span class="text-[10px] text-blue-500 font-mono ">#06</span>
+    <span class="truncate">laya-mlx-mirror-227 异步中间件流水线与 mirror 接入规范</span>
+  </a>
+</li><li class="py-1">
+  <a href="https://kxtm.tcti.cn/qiye/automation-60251739.html?ref=node_7" class="text-xs text-slate-600 hover:text-blue-600 hover:underline flex items-center gap-1.5 truncate ">
+    <span class="text-[10px] text-blue-500 font-mono ">#07</span>
+    <span class="truncate">冷热数据分层镜像：laya-mlx-mirror-227 laya-mlx-mirror-22 权威归档源</span>
+  </a>
+</li><li class="py-1">
+  <a href="https://kxtm.tcti.cn/qiye/automation-60251739.html?ref=node_8" class="text-xs text-slate-600 hover:text-blue-600 hover:underline flex items-center gap-1.5 truncate ">
+    <span class="text-[10px] text-blue-500 font-mono ">#08</span>
+    <span class="truncate">基于 laya-mlx-mirror-227 的极致延迟优化与内存拓扑分析 (RFC-857)</span>
+  </a>
+</li><li class="py-1">
+  <a href="https://kxtm.tcti.cn/qiye/automation-60251739.html?ref=node_9" class="text-xs text-slate-600 hover:text-blue-600 hover:underline flex items-center gap-1.5 truncate ">
+    <span class="text-[10px] text-blue-500 font-mono ">#09</span>
+    <span class="truncate">基于 laya-mlx-mirror-227 的高吞吐 availability 设计白皮书</span>
+  </a>
+</li><li class="py-1">
+  <a href="https://kxtm.tcti.cn/qiye/automation-60251739.html?ref=node_10" class="text-xs text-slate-600 hover:text-blue-600 hover:underline flex items-center gap-1.5 truncate ">
+    <span class="text-[10px] text-blue-500 font-mono ">#10</span>
+    <span class="truncate">基于 laya-mlx-mirror-227 的自动化部署与生产环境配置实践</span>
+  </a>
+</li><li class="py-1">
+  <a href="https://kxtm.tcti.cn/qiye/automation-60251739.html?ref=node_11" class="text-xs text-slate-600 hover:text-blue-600 hover:underline flex items-center gap-1.5 truncate ">
+    <span class="text-[10px] text-blue-500 font-mono ">#11</span>
+    <span class="truncate">冷热数据分层镜像：laya-mlx-mirror-227 长上下文状态管理 权威归档源</span>
+  </a>
+</li><li class="py-1">
+  <a href="https://kxtm.tcti.cn/qiye/automation-60251739.html?ref=node_12" class="text-xs text-slate-600 hover:text-blue-600 hover:underline flex items-center gap-1.5 truncate ">
+    <span class="text-[10px] text-blue-500 font-mono ">#12</span>
+    <span class="truncate">面向生产级运行的 laya-mlx-mirror-227 稳定性防护白皮书 (Core/topolo)</span>
+  </a>
+</li>
+          </ul>
+        </div>
+
+      </aside>
+
+    </div>
   </main>
-  <footer class="border-t border-slate-200 bg-white py-6 text-center text-sm text-slate-500">
-    © 2026 LinkMatrix Topology Hub. Powered by GitHub Pages.
-  </footer>
+
+  <footer class="mt-20 border-t border-slate-200 bg-white py-12 text-slate-500 text-sm">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+    <div class="flex items-center gap-2">
+      <span class="w-6 h-6 rounded bg-slate-800 text-white flex items-center justify-center text-xs font-bold">LM</span>
+      <span>© 2026 <strong>laya-mlx-mirror-227</strong> - 官方开源高可用拓扑镜像与白皮书</span>
+    </div>
+    <div class="flex items-center gap-4 text-xs text-slate-400">
+      <a href="./index.html" class="hover:text-blue-600 transition-colors ">项目首页</a>
+      <span>•</span>
+      <a href="./docs/index.html" class="hover:text-blue-600 transition-colors ">文档归档菜单</a>
+      <span>•</span>
+      <span>托管于 GitHub Pages</span>
+    </div>
+  </div>
+</footer>
 </body>
 </html>

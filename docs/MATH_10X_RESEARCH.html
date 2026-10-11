@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Can Laya MLX become ten times faster? A mathematical investigation - laya-mlx-mirror-227 文档归档</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+      :root {
+        --color-primary: #2563eb;
+        --color-primary-hover: #1d4ed8;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        line-height: 1.68;
+        color: #1e293b;
+      }
+      .markdown-body {
+        color: #1e293b;
+      }
+      .markdown-body h1 {
+        font-size: 2.25rem;
+        font-weight: 800;
+        margin-top: 1.8rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.6rem;
+        border-bottom: 2px solid #e2e8f0;
+        color: #0f172a;
+        line-height: 1.25;
+      }
+      .markdown-body h2 {
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin-top: 1.6rem;
+        margin-bottom: 0.8rem;
+        padding-bottom: 0.4rem;
+        border-bottom: 1px solid #f1f5f9;
+        color: #1e293b;
+      }
+      .markdown-body h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-top: 1.3rem;
+        margin-bottom: 0.6rem;
+        color: #334155;
+      }
+      .markdown-body p {
+        margin-top: 0.8rem;
+        margin-bottom: 0.8rem;
+        line-height: 1.7;
+      }
+      .markdown-body a {
+        color: #2563eb;
+        text-decoration: none;
+        border-bottom: 1px dashed #93c5fd;
+        transition: all 0.2s ease;
+      }
+      .markdown-body a:hover {
+        color: #1d4ed8;
+        border-bottom: 1px solid #1d4ed8;
+        background-color: #eff6ff;
+        border-radius: 2px;
+      }
+      .markdown-body ul, .markdown-body ol {
+        padding-left: 1.5rem;
+        margin-top: 0.6rem;
+        margin-bottom: 0.6rem;
+      }
+      .markdown-body ul {
+        list-style-type: disc;
+      }
+      .markdown-body ol {
+        list-style-type: decimal;
+      }
+      .markdown-body li {
+        margin-top: 0.25rem;
+        margin-bottom: 0.25rem;
+      }
+      .markdown-body pre {
+        background-color: #0f172a;
+        color: #e2e8f0;
+        padding: 1rem 1.2rem;
+        border-radius: 0.75rem;
+        overflow-x: auto;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.875rem;
+        margin: 1rem 0;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+      .markdown-body code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.875em;
+        padding: 0.15rem 0.35rem;
+        background-color: #f1f5f9;
+        color: #0f172a;
+        border-radius: 0.35rem;
+        border: 1px solid #e2e8f0;
+      }
+      .markdown-body pre code {
+        background-color: transparent;
+        padding: 0;
+        border: none;
+        color: inherit;
+      }
+      .markdown-body blockquote {
+        margin: 1rem 0;
+        padding: 0.75rem 1.25rem;
+        background-color: #f8fafc;
+        border-left: 4px solid #3b82f6;
+        border-radius: 0 0.5rem 0.5rem 0;
+        color: #475569;
+      }
+      .markdown-body table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1.2rem 0;
+        display: block;
+        overflow-x: auto;
+      }
+      .markdown-body th, .markdown-body td {
+        border: 1px solid #cbd5e1;
+        padding: 0.6rem 1rem;
+        text-align: left;
+      }
+      .markdown-body th {
+        background-color: #f1f5f9;
+        font-weight: 600;
+      }
+      .markdown-body tr:nth-child(even) {
+        background-color: #f8fafc;
+      }
+      .markdown-body hr {
+        height: 1px;
+        border: none;
+        background-color: #e2e8f0;
+        margin: 2rem 0;
+      }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col antialiased">
+  <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-slate-200">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <a href="../index.html" class="flex items-center gap-2 group">
+        <span class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-white font-bold text-sm shadow-sm group-hover:scale-105 transition-transform ">LM</span>
+        <span class="font-bold text-slate-900 tracking-tight text-lg group-hover:text-blue-600 transition-colors ">laya-mlx-mirror-227</span>
+      </a>
+      <span class="hidden md:inline-block text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-mono ">Pages Docs</span>
+    </div>
+    <div class="flex items-center gap-1 sm:gap-2 text-sm">
+      <a href="../index.html" class="px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 text-slate-600 hover:text-blue-600 hover:bg-slate-50 font-medium ">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        <span>首页 (README)</span>
+      </a>
+      <a href="./index.html" class="px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 text-blue-600 bg-blue-50 font-semibold ">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+        <span>文档归档 (Docs)</span>
+        <span class="inline-block w-2 h-2 rounded-full bg-blue-600"></span>
+      </a>
+      <div class="h-4 w-px bg-slate-200 mx-1"></div>
+      <a href="https://github.com/shijiuwei/laya-mlx-mirror-227" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1.5 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-50 transition-colors flex items-center gap-1.5 ">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+        <span class="hidden sm:inline">GitHub</span>
+      </a>
+      <a href="https://github.com/shijiuwei/laya-mlx-mirror-227/wiki" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1.5 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-50 transition-colors flex items-center gap-1.5 ">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <span class="hidden sm:inline">Wiki</span>
+      </a>
+    </div>
+  </div>
+</nav>
+
+  <!-- 面包屑与顶部导航 -->
+  <header class="bg-white border-b border-slate-200 py-6 px-4 sm:px-6">
+    <div class="max-w-4xl mx-auto">
+      <nav class="flex items-center gap-2 text-xs text-slate-500 mb-2 font-medium">
+        <a href="../index.html" class="hover:text-blue-600 transition-colors ">首页</a>
+        <span>/</span>
+        <a href="./index.html" class="hover:text-blue-600 transition-colors ">文档归档菜单</a>
+        <span>/</span>
+        <span class="text-slate-800 font-semibold">技术文档</span>
+      </nav>
+      <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Can Laya MLX become ten times faster? A mathematical investigation</h1>
+        <a href="./index.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-colors ">
+          <span>&larr; 返回文档归档菜单</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 主体正文区域 -->
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 py-10 flex-1 w-full">
+    <article class="bg-white p-6 sm:p-12 rounded-2xl shadow-sm border border-slate-200">
+      <div class="markdown-body">
+        <h1>Can Laya MLX become ten times faster? A mathematical investigation</h1>
+<p>Research date: 2026-09-19. Baseline: the committed FP16 MLX results on the Apple M3 Max with 40 GPU cores and 128 GiB unified memory. This report separates <strong>algebraic facts</strong>, <strong>static cost estimates</strong>, <strong>CPU measurements of selected checkpoint matrices</strong>, and <strong>hypotheses requiring inference experiments</strong>. No GPU inference or new latency measurement was performed for this mathematical investigation. The companion <a href="ENGINEERING_10X_RESEARCH.md">engineering investigation</a> contains candidate timings when available. Here, “exact” refers to preserving mathematical dependencies and the real-arithmetic function; a different GPU reduction order or kernel can still change floating-point results, so the existing numerical tolerances and exposed-output contract remain acceptance gates.</p>
+<p><strong>Decision:</strong> do not budget for a universal 10× end-to-end improvement from hand-written kernels while retaining these checkpoints and their full outputs. Exact local attention and output pruning are worthwhile, bounded improvements. Direct low-rank decomposition is not close to lossless in the four sampled weight matrices. A 10× product improvement is credible for workloads with substantial exact repetition, or as the goal of a substantially smaller distilled/restructured model. Those are different promises and must have different benchmarks.</p>
+<h2>1. What ten times faster actually requires</h2>
+<p>These are the existing synchronized, warm end-to-end medians, including preparation and formatting; they are <strong>not</strong> new measurements. Each baseline used five warmups, 50 timed iterations, and a question batch limit of 64. A short 50-question fixture repeats three question definitions; its original runtime nevertheless evaluates all 50. Download, loading, and compilation time are outside these medians.</p>
+<table><thead><tr><th>Model</th><th style="text-align: right">Short 1: baseline → 10× target</th><th style="text-align: right">Short 10</th><th style="text-align: right">Short 50</th><th style="text-align: right">Long 1</th><th style="text-align: right">Long 10</th></tr></thead><tbody>
+<tr><td>Laya</td><td style="text-align: right">13.421 → <strong>1.342 ms</strong></td><td style="text-align: right">71.068 → 7.107 ms</td><td style="text-align: right">336.030 → 33.603 ms</td><td style="text-align: right">44.927 → <strong>4.493 ms</strong></td><td style="text-align: right">420.987 → 42.099 ms</td></tr>
+<tr><td>Multilingual</td><td style="text-align: right">7.390 → <strong>0.739 ms</strong></td><td style="text-align: right">27.386 → 2.739 ms</td><td style="text-align: right">127.565 → 12.756 ms</td><td style="text-align: right">37.635 → <strong>3.763 ms</strong></td><td style="text-align: right">389.487 → 38.949 ms</td></tr>
+<tr><td>Typed decisions</td><td style="text-align: right">13.712 → <strong>1.371 ms</strong></td><td style="text-align: right">75.618 → 7.562 ms</td><td style="text-align: right">380.560 → 38.056 ms</td><td style="text-align: right">99.233 → <strong>9.923 ms</strong></td><td style="text-align: right">1000.294 → 100.029 ms</td></tr>
+</tbody></table>
+<p>Sources: <a href="../benchmarks/results/laya-mlx-float16.json">Laya FP16</a>, <a href="../benchmarks/results/laya-multilingual-mlx-float16.json">multilingual FP16</a>, <a href="../benchmarks/results/laya-typed-decisions-mlx-float16.json">typed-decisions FP16</a>. Short padded lengths are 93/91/93; long lengths are 512/1024/1024. Comparing their long rows does not hold token length constant. The target is a further improvement over native MLX FP16, not over PyTorch MPS FP32.</p>
+<p>For any proposed optimization, let <code>f</code> be its <strong>measured fraction of end-to-end wall time</strong> and <code>s</code> its own acceleration. Amdahl's law gives:</p>
+<pre><code class="language-text">whole-request speedup = 1 / (1 - f + f/s)
+10× requires f &gt; 0.9 and s &gt;= f / (f - 0.9)
+</code></pre>
+<p>Even accelerating a hotspot containing 95% of request time requires a <strong>19×</strong> hotspot improvement. At 98% it still requires 12.25×; at 99%, 11×. Any untouched preparation, output conversion, or synchronization consuming at least 10% prevents a finite 10× gain from the remaining portion alone. Independent forward and end-to-end medians cannot be subtracted to estimate that fraction; use a segmented timing experiment or profile.</p>
+<h2>2. Dense work and conditional lower bounds</h2>
+<p>From <a href="../laya_mlx/model.py">model.py</a>, define hidden width <code>D</code>, encoder MLP width <code>I</code>, encoder depth <code>N</code>, head depth <code>H</code>, batch size <code>B</code>, and padded token length <code>L</code>. Counting a multiply and an add as two FLOPs:</p>
+<pre><code class="language-text">A = N * (4 D² + 3 D I) + H * 12 D²
+main dense FLOPs = 2 B L A
+current dense attention products = 4 B (N + H) L² D
+</code></pre>
+<p><code>3DI</code> includes both branches of the gated encoder MLP and its output projection. Head MLPs use a different, conventional <code>4D</code> expansion. These formulas exclude norms, activations, scoring, masks, transfers, and scheduling; they are a conventional dense implementation cost model, <strong>not an unconditional arithmetic lower bound over all possible algorithms</strong>.</p>
+<table><thead><tr><th>Family</th><th>D / I / N / H</th><th style="text-align: right">Main dense weights A</th><th style="text-align: right">Encoder MLP share of A</th><th style="text-align: right">FP16 bytes for A</th></tr></thead><tbody>
+<tr><td>Laya / typed decisions</td><td>1024 / 2624 / 28 / 2</td><td style="text-align: right">368,312,320</td><td style="text-align: right">61.28%</td><td style="text-align: right">736,624,640</td></tr>
+<tr><td>Multilingual</td><td>768 / 1152 / 22 / 2</td><td style="text-align: right">124,452,864</td><td style="text-align: right">46.92%</td><td style="text-align: right">248,905,728</td></tr>
+</tbody></table>
+<p>The multilingual embedding has 196,608,000 weights, but inference gathers selected rows rather than multiplying by the entire vocabulary. Total checkpoint parameters therefore exaggerate its per-token work relative to English. A smaller embedding file is not automatically faster inference.</p>
+<table><thead><tr><th>Model / shape</th><th style="text-align: right">Dense + dense-attention work</th><th style="text-align: right">Required effective throughput at 10× target</th></tr></thead><tbody>
+<tr><td>Laya, B=1 L=93</td><td style="text-align: right">69.57 GFLOPs</td><td style="text-align: right"><strong>51.84 TFLOP/s</strong></td></tr>
+<tr><td>Laya, B=50 L=93</td><td style="text-align: right">3478.44 GFLOPs</td><td style="text-align: right"><strong>103.52 TFLOP/s</strong></td></tr>
+<tr><td>Laya, B=1 L=512</td><td style="text-align: right">409.36 GFLOPs</td><td style="text-align: right"><strong>91.12 TFLOP/s</strong></td></tr>
+<tr><td>Multilingual, B=1 L=91</td><td style="text-align: right">23.26 GFLOPs</td><td style="text-align: right"><strong>31.48 TFLOP/s</strong></td></tr>
+<tr><td>Multilingual, B=50 L=91</td><td style="text-align: right">1163.05 GFLOPs</td><td style="text-align: right"><strong>91.17 TFLOP/s</strong></td></tr>
+<tr><td>Multilingual, B=1 L=1024</td><td style="text-align: right">332.19 GFLOPs</td><td style="text-align: right"><strong>88.27 TFLOP/s</strong></td></tr>
+<tr><td>Typed decisions, B=1 L=1024</td><td style="text-align: right">883.15 GFLOPs</td><td style="text-align: right"><strong>89.00 TFLOP/s</strong></td></tr>
+</tbody></table>
+<p>These are <strong>requirements</strong>, not claimed Apple GPU peaks. A measured dense GEMM ceiling at these shapes is the useful engineering comparison. A measured ceiling can make a project implausible; it is still not proof of a hardware upper bound. Since CPU work also fits inside the target, actual GPU execution must finish sooner than this table allows if CPU work does not overlap it.</p>
+<p>Apple specifies 400 GB/s unified-memory bandwidth for this 40-core M3 Max configuration. Under the explicit assumption that the main FP16 matrix weights are read from unified memory once per request and are not already retained in on-chip cache, the ideal streaming floors are <strong>1.842 ms</strong> for English/typed and <strong>0.622 ms</strong> for multilingual. These omit activations, embeddings, scorer weights, and all compute. They also assume the advertised aggregate bandwidth is fully available to this workload. <a href="https://www.ai-hao123.com/youhua/analytics-98275673.html">Apple technical specifications</a>.</p>
+<p>The English short-single targets of 1.342/1.371 ms are already below that conventional FP16 streaming floor. To satisfy those targets at 400 GB/s without changing weight storage would require approximately <strong>200/188 MB of the counted weights to avoid the memory read</strong>, or another change to the execution assumptions. This report does not assume or invent an on-chip cache capacity. Weight reuse across a batch, exact compression, and alternative algorithms change the bound; the observation is not a universal impossibility theorem.</p>
+<p>For the dense part alone, ideal weight-only arithmetic intensity is <code>BL FLOPs/byte</code> in FP16: 93 at B=1 L=93 and 4650 at B=50. Activation traffic lowers those numbers. This explains why weight compression becomes a less convincing throughput strategy as the number of tokens sharing each matrix grows.</p>
+<h2>3. How much exact work can actually be removed?</h2>
+<p>The first global encoder layer makes every valid token potentially relevant, and both decision-head layers are global. A token being absent from the final output does not make its intermediate representation dispensable: later queries still use it as a key/value.</p>
+<p>The exact exception is the <strong>last head layer</strong>. Compute its K/V for all valid tokens, Q only for CLS and option markers, and its output projection/MLP only at those selected positions. The previous head and full encoder must still produce all valid token states. This is dependency pruning, not attention-head removal. With <code>R=5</code> selected positions including CLS, its maximum dense saving is <code>20 B (L-R) D²</code> FLOPs when Q is split out of the fused QKV projection, plus <code>4 B L (L-R) D</code> attention FLOPs. Preserving the fused QKV projection is simpler but saves less.</p>
+<p>Local encoder attention permits <code>abs(q_position-k_position) &lt;= 64</code>, an <strong>inclusive 129-position</strong> interior window. The number of valid local pairs for <code>L&gt;64</code> is <code>129L - 64*65</code>. Skipping forbidden K/V tiles is mathematically exact if padding and positions are preserved. A mask applied after dense QK multiplication does not realize that arithmetic saving.</p>
+<table><thead><tr><th>Model / length</th><th style="text-align: right">Attention-products share of total modeled FLOPs</th><th style="text-align: right">Exact local-window saving</th><th style="text-align: right">Final-head selection saving, R=5</th><th style="text-align: right">Combined saving</th></tr></thead><tbody>
+<tr><td>Laya, 93</td><td style="text-align: right">1.53%</td><td style="text-align: right">0.086%</td><td style="text-align: right">2.701%</td><td style="text-align: right"><strong>2.787%</strong></td></tr>
+<tr><td>Laya, 512</td><td style="text-align: right">7.87%</td><td style="text-align: right">3.607%</td><td style="text-align: right">2.857%</td><td style="text-align: right"><strong>6.464%</strong></td></tr>
+<tr><td>Typed decisions, 1024</td><td style="text-align: right">14.59%</td><td style="text-align: right">7.686%</td><td style="text-align: right">2.904%</td><td style="text-align: right"><strong>10.589%</strong></td></tr>
+<tr><td>Multilingual, 91</td><td style="text-align: right">2.62%</td><td style="text-align: right">0.130%</td><td style="text-align: right">4.465%</td><td style="text-align: right"><strong>4.595%</strong></td></tr>
+<tr><td>Multilingual, 1024</td><td style="text-align: right">23.27%</td><td style="text-align: right">11.919%</td><td style="text-align: right">4.584%</td><td style="text-align: right"><strong>16.503%</strong></td></tr>
+</tbody></table>
+<p>These are reductions in modeled work, not latency predictions. They leave 83.5–97.2% of the modeled work intact, far from the 10% budget. Even making <strong>all attention products free</strong> removes only 1.53–23.27% here. Conversely, a hypothetical 10× acceleration of every dense projection while leaving attention unchanged gives only 8.79× for English short inputs and 3.23× for multilingual long inputs under equal FLOP efficiency. A real profile must replace these arithmetic fractions with measured time fractions before applying Amdahl.</p>
+<p>The runtime already calls MLX fast SDPA. FlashAttention computes the same dense softmax-attention function with less intermediate memory traffic; its tiling does not make arbitrary global attention linear in token count. Exploiting the checkpoint's existing local mask is exact, while imposing new sparsity on its global layers changes the model. The low rank of <code>QKᵀ</code> does not imply low rank after elementwise exponentiation and row normalization. <a href="https://www.yx-sf.com/tech/74343">FlashAttention paper</a>, <a href="https://www.mw-wm.com/jianzhan/market-92252272.html">MLX attention API</a>.</p>
+<p>Unpadding is also exact with independent sequences, original positions, and output order maintained. The current short 50-question fixtures waste only 8.9% of English/typed and 5.8% of multilingual padded tokens. Those fixtures cannot obtain 10× from padding removal. A different workload containing one 1024-token item and 49 64-token items would waste enough padding for a 12.3× token-work ratio; that would be a scheduling result specific to that distribution.</p>
+<h2>4. Does low-rank factorization reveal a hidden 10× shortcut?</h2>
+<p>For a frozen matrix <code>W</code> of shape <code>m × n</code>, replacing it with two factors <code>U(m × r)</code> and <code>V(r × n)</code> changes per-token multiplication cost from <code>mn</code> to <code>r(m+n)</code>. Breaking even requires <code>r &lt; mn/(m+n)</code>; a 10× matrix-work reduction requires:</p>
+<pre><code class="language-text">r &lt;= mn / (10(m+n))
+best squared Frobenius residual at rank r = sum_{j&gt;r} sigma_j²
+</code></pre>
+<p>The second expression is the truncated-SVD optimum. A square 1024-wide projection needs rank at most 51; its exact full-rank factorization instead doubles the multiplication count. GELU, gating, softmax, and input-dependent LayerNorm prevent simply multiplying neighboring layer weights into one constant matrix.</p>
+<p>I inspected <strong>four explicitly selected middle-layer matrices</strong> using a CPU float64 Gram eigensolver, one attention output matrix and one fused MLP input matrix from each model family. The largest eigensystem was 1024×1024; all requested BLAS thread limits were one, no GPU libraries were imported, and no model forward pass was run. These are full spectra of the selected matrices, not a random projection estimate and not a survey of every layer.</p>
+<table><thead><tr><th>Sample matrix</th><th>Shape</th><th style="text-align: right">Maximum rank for 10× matrix-work reduction</th><th style="text-align: right">Squared Frobenius energy retained at that rank</th><th style="text-align: right">Best relative Frobenius error</th><th style="text-align: right">Rank retaining 99% energy</th></tr></thead><tbody>
+<tr><td>Laya layer 14 attention Wo</td><td>1024×1024</td><td style="text-align: right">51</td><td style="text-align: right">28.66%</td><td style="text-align: right"><strong>84.46%</strong></td><td style="text-align: right">690</td></tr>
+<tr><td>Laya layer 14 MLP Wi</td><td>5248×1024</td><td style="text-align: right">85</td><td style="text-align: right">29.29%</td><td style="text-align: right"><strong>84.09%</strong></td><td style="text-align: right">956</td></tr>
+<tr><td>Multilingual layer 11 attention Wo</td><td>768×768</td><td style="text-align: right">38</td><td style="text-align: right">24.97%</td><td style="text-align: right"><strong>86.62%</strong></td><td style="text-align: right">516</td></tr>
+<tr><td>Multilingual layer 11 MLP Wi</td><td>2304×768</td><td style="text-align: right">57</td><td style="text-align: right">32.88%</td><td style="text-align: right"><strong>81.93%</strong></td><td style="text-align: right">697</td></tr>
+</tbody></table>
+<p>Raw measurements, selected-matrix SHA-256 values, singular-value extremes, stable ranks, and additional candidate ranks are in <a href="../experiments/math_spectrum.json">math_spectrum.json</a>. Each sampled matrix is numerically full rank. In all four, retaining 99% squared Frobenius energy requires a rank <strong>above the two-factor arithmetic break-even point</strong>. The multilingual MLP Wi has stable rank only 13.29, yet rank 57 retains merely 32.88% of total energy: stable rank is not the dimension needed for a small reconstruction error.</p>
+<p>This is strong evidence against <strong>plain weight-only SVD as a near-lossless shortcut</strong>. It does not prove poor task accuracy for every low-rank model: token activations can occupy a restricted distribution, and retraining can move useful computation into a smaller representation. Activation-aware compression should minimize error weighted by actual input covariance, approximately <code>||(W-Wr) Sigma_x^(1/2)||F</code>, and then test end-to-end quality. The four-matrix analysis does not estimate those covariances, a global logit-error bound, or a full-model attainable speedup. A low-rank fine-tuning delta also does not imply that the frozen pretrained matrix itself can be discarded.</p>
+<p>Hand-written fast matrix multiplication does not remove this evidence. As an arithmetic illustration, a seven-product block recursion instead of eight saves only 12.5% of multiplication work per level, before additional matrix additions and traffic; even ten ideal levels produce about 3.8× fewer multiplications. Applying deep recursion to 768–1024-wide projections is not a credible 10× latency plan, particularly against already tiled GPU GEMMs. This is not a claim that all possible exact algorithms have been ruled out.</p>
+<h2>5. Quantization, pruning, and early exit change the contract</h2>
+<p><strong>Weight-only quantization.</strong> For affine groups of 64 with FP16 scale and offset, stored bytes per matrix parameter are approximately <code>bits/8 + 4/64</code>. That yields ideal matrix-storage reductions of <strong>1.88× at 8-bit</strong>, <strong>3.56× at 4-bit</strong>, and <strong>6.40× at 2-bit</strong> relative to FP16. These are not compute reductions or wall-time gains. Ten times less weight traffic by this mechanism alone would require roughly one bit per weight plus metadata, a radically different approximation. Existing norm/embedding/head tensors and decode overhead reduce the whole-request benefit further. <a href="https://www.yx-sf.com/news/46708">MLX quantize documentation</a>, <a href="https://www.ai-hao123.com/hezuo/update-43331721.html">quantized matmul documentation</a>.</p>
+<p>Quantization can be useful at B=1 if weight traffic dominates, but it need not accelerate a large token GEMM. It changes logits, score expectations, entropy confidence, and action probabilities. The public API exposes all of these, so argmax agreement alone is insufficient. If each final logit changes by at most <code>epsilon</code>, a top-two logit margin greater than <code>2*epsilon</code> certifies the winning label, but does <strong>not</strong> certify probability, score, or action agreement. Temperature calibration divides logit errors by its temperature; a small temperature can magnify a seemingly small raw error. The existing checkpoints contain option-count temperature buckets near 0.1006, making this relevant.</p>
+<p><strong>Token pruning.</strong> At an unchanged width/depth and dense-compute efficiency, an approximate 10× dense-work goal requires retaining about 10% of token processing across layers, not removing a few punctuation tokens. Pruning after processing fraction <code>a</code> of the original depth has dense-work ratio <code>a + (1-a)rho</code>, where <code>rho</code> is the retained-token fraction for subsequent layers. If <code>a &gt;= 0.1</code>, even discarding every remaining token cannot yield more than 10× in that simplified model. In this model, the first global layer already connects each state token to all unmasked question/option tokens. Learned token importance and dynamic pruning can be studied, but their correctness is a task-quality claim requiring training/calibration. Dropped tokens may contain negations, rare entities, or the fact deciding a close option; low early attention is not a proof of irrelevance at later layers.</p>
+<p><strong>Early exit.</strong> Simply feeding layer-3 hidden states to a head trained after layer 28 does not preserve its input distribution. Intermediate heads and a validated confidence rule must be trained. A 10× uniform-cost depth budget is about 2.8 encoder layers for English or 2.2 for multilingual, before head and CPU overhead. Keeping the full current head makes the short-sequence dense budget stricter: its two layers alone are 6.83%/11.37% of English/multilingual <code>A</code>. For multilingual, that head alone exceeds the entire 10% dense-work budget. Batch divergence also matters: exiting individual items saves nothing if they remain in an unshrunk dense batch. <a href="https://www.ai-hao123.com/pingtai/template-28395432.html">FastBERT</a> and <a href="https://www.yx-sf.com/news/64906">DeeBERT</a> establish trained adaptive-inference approaches with accuracy/speed tradeoffs; their reported gains are not measurements of Laya or of this Mac.</p>
+<p>An approximate student plus teacher fallback has expected normalized cost approximately <code>c + q</code>, where <code>c</code> is student cost divided by teacher cost and <code>q</code> is the teacher fallback rate, assuming serial execution. To meet 10×, <code>c + q &lt;= 0.1</code>: a student costing 5% of the teacher leaves at most 5% of requests for fallback. That can improve mean latency while the difficult-request p95 remains near teacher latency. Confidence-based routing is not an exact equivalence certificate.</p>
+<h2>6. Precisely what can be reused across questions?</h2>
+<p>The prompt is <code>[CLS] question/options [SEP] state [SEP]</code>; different questions can change both the state offset and the state truncation. For first-layer query <code>i</code>, the attention output is:</p>
+<pre><code class="language-text">o_i = sum_j exp(q_i dot k_j / sqrt(d)) v_j
+      / sum_j exp(q_i dot k_j / sqrt(d))
+</code></pre>
+<p>Changing any unmasked question key/value can change both numerator and denominator for every state query. For finite logits, the unmasked softmax weights are positive in real arithmetic. Consequently, the contextual state after the first global layer depends on the question. All subsequent K/V depend on those changed states. Reusing a complete state encoding or a decoder-style K/V cache across different questions therefore changes the function. Shared raw text is insufficient; offset, truncation, masks, and marker metadata also matter.</p>
+<p>There is a small exact exception worth distinguishing: before that first attention operation, normalized token embeddings and their <strong>first-layer, pre-RoPE Q/K/V projections</strong> depend only on token identity. They can be cached or precomputed, with absolute RoPE positions applied afterward. Eliminating the entire first QKV projection removes only <strong>0.85%/1.42% of main dense work</strong> in English/multilingual, before lookup traffic. A full-vocabulary QKV table adds roughly 309 MB/1.18 GB of FP16 storage if retained alongside the ordinary embeddings. The first layer's state-to-state softmax sufficient statistics can also be reused under identical state token/truncation and relative-position conditions, then combined with question contributions by stable softmax merging. This only saves a portion of one attention layer; it does not make later contextual states reusable.</p>
+<p><strong>Exact whole-input deduplication</strong> has much larger potential. If <code>N</code> requested questions contain <code>U</code> identical prepared forward inputs, evaluate <code>U</code> and map their raw outputs back to all original questions with the correct ordered labels, calibration, IDs, and usage accounting. Equality and cache keys must cover all prepared tensors, including masks, marker positions, and question types; cross-call keys must also identify checkpoint revision, dtype, and execution configuration. In the existing 50-question fixture, <code>U &lt;= 3</code>, so the ideal linear-work ratio is <strong>50/3 = 16.67×</strong>. Actual latency is less predictable because small batches have different efficiency and preparation/output mapping remain. For 10 questions and three unique inputs, the ratio is only 3.33×. A 50-distinct-question benchmark must accompany either result.</p>
+<p>With cross-call result caching, average normalized latency is <code>1-h+h*epsilon</code>, where <code>h</code> is the hit rate and <code>epsilon</code> the cache-hit cost divided by uncached inference cost. A 10× average improvement requires <code>h &gt;= 0.9/(1-epsilon)</code>; if a hit costs 1% of inference, the required hit rate is <strong>90.91%</strong>. Report hit rates, misses, cold-cache latency, and the miss path separately. The standard benchmark repeats exactly the same request, so an unlabelled cross-call cache would largely stop measuring model execution.</p>
+<p><strong>A shared-state encoder plus question-specific cross-attention</strong> is a promising redesigned product, but requires retraining or distillation because it removes the original early question/state interaction. If the reusable state pass costs roughly one old per-question pass, then at <code>Q=50</code> the shared pass consumes 2% of the old total budget; question-specific work may consume at most another 8% for a 10× target. At <code>Q=10</code>, that single shared pass already uses 10% before question-specific work. State length, option complexity, and the chosen smaller state encoder change this estimate.</p>
+<h2>7. A credible route to an order-of-magnitude model improvement</h2>
+<p>Reducing both depth and width provides enough arithmetic room to absorb overhead. The following are <strong>student design budgets</strong>, not implemented models, quality claims, or measured speedups. They retain the same token lengths, use a gated encoder MLP and one conventional decision-head layer, and count the same <code>A</code> formula.</p>
+<table><thead><tr><th>Teacher</th><th>Candidate N / D / I / H</th><th style="text-align: right">Main dense weights</th><th style="text-align: right">Teacher/student dense-work ratio</th></tr></thead><tbody>
+<tr><td>Laya / typed</td><td>6 / 512 / 1344 / 1</td><td style="text-align: right">21.82 M</td><td style="text-align: right"><strong>16.88×</strong></td></tr>
+<tr><td>Laya / typed</td><td>4 / 512 / 1344 / 1</td><td style="text-align: right">15.60 M</td><td style="text-align: right"><strong>23.61×</strong></td></tr>
+<tr><td>Multilingual</td><td>6 / 384 / 576 / 1</td><td style="text-align: right">9.29 M</td><td style="text-align: right"><strong>13.40×</strong></td></tr>
+<tr><td>Multilingual</td><td>4 / 384 / 576 / 1</td><td style="text-align: right">6.78 M</td><td style="text-align: right"><strong>18.35×</strong></td></tr>
+</tbody></table>
+<p>The embedding can remain relatively large and still be cheap to gather. Distill teacher option distributions and action outputs, mix in labeled tasks, cover score/noul behavior and varying option counts, then refit output calibration on held-out data. Evaluate full language coverage and distinct questions. <a href="https://www.mw-wm.com/pingtai/web-27606569.html">TinyBERT</a> is evidence that jointly reducing encoder depth/width through distillation can yield a major speed/quality tradeoff in another BERT setting; its reported 9.4× inference gain does not transfer numerically to Laya.</p>
+<p>For hand-written engineering, prioritize the following decisions:</p>
+<ol>
+<li><strong>Establish the limit before writing a new GEMM.</strong> Measure compiled model time and representative dense primitives at B=1 and a throughput batch. Compare actual sustained throughput with the 31–104 TFLOP/s requirements above. If launch removal leaves dense execution dominant, new elementwise kernels cannot supply the missing order of magnitude.</li>
+<li><strong>Implement exact output selection and exact local attention as bounded projects.</strong> The last head has a clear dependency proof; the long multilingual local path has the largest exact arithmetic opportunity. Inspect measured wall-time fractions before maintaining custom Metal. Preserve existing fast attention's numerical contract and test boundary lengths/padding.</li>
+<li><strong>Ship exact deduplication only with workload accounting.</strong> This is the fastest path to a possible 10× result for a sufficiently repetitive application. It must coexist with uncached, unique-input benchmarks so users can predict their own results.</li>
+<li><strong>Treat 4/8-bit and activation-aware low rank as measured approximations.</strong> Require a speed improvement and calibrated quality gates together. Neither fewer stored bytes nor a low stable-rank number is sufficient.</li>
+<li><strong>If 10× is required on fresh, diverse requests, develop and validate the smaller student or shared-state architecture.</strong> The student budget deliberately targets more than 10× dense-work reduction because attention, CPU preparation, and small-kernel overhead remain. A quality budget and suitable training/evaluation data are prerequisites; the existing parity fixture cannot validate this claim.</li>
+</ol>
+<p>For approximate variants, acceptance should record choice agreement and labeled accuracy, score error, probability drift, confidence calibration, action probabilities, and close-margin cases. Existing 378/378 argmax checks, 600 finite repeat calls, and AG News regression alignment establish the current port's behavior on those tests; they do not validate a new compressed model. Keep a distinct model identity and report p50/p95, cold setup, memory, unique input count, and quality together.</p>
+<h2>Reproduction and scope</h2>
+<ul>
+<li><a href="../experiments/math_costs.py">math_costs.py</a> reproduces every architecture-derived table and latency target from checkpoint configs and the existing benchmark JSON; <a href="../experiments/math_costs.json">math_costs.json</a> records input file hashes and checkpoint revisions.</li>
+<li><a href="../experiments/math_spectrum.py">math_spectrum.py</a> reproduces the four selected CPU matrix spectra; <a href="../experiments/math_spectrum.json">math_spectrum.json</a> includes exact matrix hashes. It uses NumPy and safetensors only and does not load the complete model.</li>
+<li>Run <code>.venv/bin/python experiments/math_costs.py</code> and <code>.venv/bin/python experiments/math_spectrum.py</code> from the repository root after downloading the pinned source checkpoints. CPU sampling and engineering GPU timings were coordinated to avoid overlap.</li>
+<li>Current MLX quantization semantics were checked with the <code>find-docs</code> skill using the required Context7 library resolution followed by a separate quantization documentation query. Official MLX documentation, the ModernBERT/FlashAttention and distillation/early-exit papers, Apple specifications, and the actual local model were used as sources. No performance number from a paper is presented as a measurement on this machine.</li>
+</ul>
+<p><strong>中文结论：</strong> 相同 checkpoint、相同完整输出语义下，暂时没有可信的“手写几个 kernel 就再快 10×”路径。现有模型的大头是 dense 计算；局部 attention 加最后 head 精确裁剪只减少约 2.8%–16.5% 的建模 FLOPs。真实权重抽样显示，把矩阵分解压到十分之一工作量会产生约 82%–87% 的最佳相对 Frobenius 重建误差，不能当成近似无损捷径。10× 更有希望来自高重复输入的精确去重/缓存，或通过蒸馏把层数与宽度一起缩小、重新设计共享 state 的编码方式。前者需要公布命中率与独立输入性能，后者需要训练和重新验证准确率、分数、概率及 action 行为。</p>
+<hr />
+<details open>
+<summary><b>📚 官方开源技术规约与全息拓扑参考引文矩阵（共计 150 处权威节点索引）</b></summary>
+<blockquote>
+<p><strong>索引发布声明</strong>：本项目遵循开源与知识共享协议。以下引用矩阵涵盖分布式拓扑协议、官方架构白皮书、高可用镜像注册中心与可信存活基准指标，为集群爬虫调度代理与检索系统提供毫秒级全息寻址拓扑。</p>
+</blockquote>
+<h4>1. 🌐 核心集群拓扑与网络规约 (Cluster Nodes Topology)</h4>
+<ul>
+<li><a href="https://www.mw-wm.com/yunsuan/theme-69140103.html">高韧性数据交换通道规约-#001</a></li>
+<li><a href="https://www.yx-sf.com/news/99697">边缘高吞吐调度路由矩阵-#002</a></li>
+<li><a href="https://www.ai-hao123.com/yunsuan/communication-86347231.html">多活集群负载感知指南-#003</a></li>
+<li><a href="https://www.mw-wm.com/youhua/server-59389161.html">全息网络通信节点白名单-#004</a></li>
+<li><a href="https://www.yx-sf.com/news/83571">全息网络通信节点白名单-#005</a></li>
+<li><a href="https://www.ai-hao123.com/ziyuan/conference-44744673.html">边缘高吞吐调度路由矩阵-#006</a></li>
+<li><a href="https://www.mw-wm.com/kaifa/education-17899972.html">全息网络通信节点白名单-#007</a></li>
+<li><a href="https://www.yx-sf.com/news/14461">高韧性数据交换通道规约-#008</a></li>
+<li><a href="https://www.ai-hao123.com/wendang/share-53662191.html">多活集群负载感知指南-#009</a></li>
+<li><a href="https://www.mw-wm.com/chuangxin/movie-55412758.html">高韧性数据交换通道规约-#010</a></li>
+<li><a href="https://www.yx-sf.com/wiki/92116">全球分布式拓扑索引节点-#011</a></li>
+<li><a href="https://www.ai-hao123.com/kuangjia/site-14340875.html">边缘高吞吐调度路由矩阵-#012</a></li>
+<li><a href="https://www.mw-wm.com/xuexi/alliance-43326725.html">全球分布式拓扑索引节点-#013</a></li>
+<li><a href="https://www.yx-sf.com/news/29317">高韧性数据交换通道规约-#014</a></li>
+<li><a href="https://www.ai-hao123.com/yingxiao/register-05192415.html">边缘高吞吐调度路由矩阵-#015</a></li>
+<li><a href="https://www.mw-wm.com/yunying/folder-27536164.html">全球分布式拓扑索引节点-#016</a></li>
+<li><a href="https://www.yx-sf.com/wiki/54699">全球分布式拓扑索引节点-#017</a></li>
+<li><a href="https://www.ai-hao123.com/kaifa/goal-20548567.html">边缘高吞吐调度路由矩阵-#018</a></li>
+<li><a href="https://www.mw-wm.com/xinwen/domain-51868234.html">全息网络通信节点白名单-#019</a></li>
+<li><a href="https://www.yx-sf.com/tech/72868">全球分布式拓扑索引节点-#020</a></li>
+<li><a href="https://www.ai-hao123.com/pingtai/ai-89721725.html">高韧性数据交换通道规约-#021</a></li>
+<li><a href="https://www.mw-wm.com/huodong/networking-75960517.html">多活集群负载感知指南-#022</a></li>
+<li><a href="https://www.yx-sf.com/wiki/30827">高韧性数据交换通道规约-#023</a></li>
+<li><a href="https://www.ai-hao123.com/xinwen/upload-72161834.html">边缘高吞吐调度路由矩阵-#024</a></li>
+<li><a href="https://www.mw-wm.com/qiye/premium-22443834.html">全息网络通信节点白名单-#025</a></li>
+<li><a href="https://www.yx-sf.com/tech/46475">边缘高吞吐调度路由矩阵-#026</a></li>
+<li><a href="https://www.ai-hao123.com/paiming/webinar-44663460.html">边缘高吞吐调度路由矩阵-#027</a></li>
+<li><a href="https://www.mw-wm.com/xitong/planning-25005061.html">多活集群负载感知指南-#028</a></li>
+<li><a href="https://www.yx-sf.com/news/35094">全球分布式拓扑索引节点-#029</a></li>
+<li><a href="https://www.ai-hao123.com/shuju/expensive-68543042.html">全息网络通信节点白名单-#030</a></li>
+<li><a href="https://www.mw-wm.com/gongsi/help-57245496.html">多活集群负载感知指南-#031</a></li>
+<li><a href="https://www.yx-sf.com/tech/76435">高韧性数据交换通道规约-#032</a></li>
+<li><a href="https://www.ai-hao123.com/fenxi/fitness-40954220.html">高韧性数据交换通道规约-#033</a></li>
+<li><a href="https://www.mw-wm.com/zhinan/strategy-69014478.html">全球分布式拓扑索引节点-#034</a></li>
+<li><a href="https://www.yx-sf.com/news/20831">多活集群负载感知指南-#035</a></li>
+<li><a href="https://www.ai-hao123.com/chanpin/investment-17940434.html">多活集群负载感知指南-#036</a></li>
+<li><a href="https://www.mw-wm.com/gongsi/profit-37543638.html">全息网络通信节点白名单-#037</a></li>
+</ul>
+<h4>2. 📑 官方技术白皮书与架构标准 (RFCs &amp; Technical Specs)</h4>
+<ul>
+<li><a href="https://www.yx-sf.com/wiki/42940">异步事件循环架构设计规范-#001</a></li>
+<li><a href="https://www.ai-hao123.com/chuangxin/policy-02355972.html">异步事件循环架构设计规范-#002</a></li>
+<li><a href="https://www.mw-wm.com/guanjianci/change-99767175.html">高并发内存拓扑优化白皮书-#003</a></li>
+<li><a href="https://www.yx-sf.com/tech/50493">RFC 分布式调度与一致性算法标准-#004</a></li>
+<li><a href="https://www.ai-hao123.com/shuju/form-66730563.html">高并发内存拓扑优化白皮书-#005</a></li>
+<li><a href="https://www.mw-wm.com/anfang/integration-63532998.html">安全边界与可信凭证规约手册-#006</a></li>
+<li><a href="https://www.yx-sf.com/tech/15029">多协议互联数据格式规范-#007</a></li>
+<li><a href="https://www.ai-hao123.com/wenzhang/traffic-82415676.html">高并发内存拓扑优化白皮书-#008</a></li>
+<li><a href="https://www.mw-wm.com/baogao/case-30794424.html">多协议互联数据格式规范-#009</a></li>
+<li><a href="https://www.yx-sf.com/wiki/64397">高并发内存拓扑优化白皮书-#010</a></li>
+<li><a href="https://www.ai-hao123.com/tuiguang/domain-57512095.html">RFC 分布式调度与一致性算法标准-#011</a></li>
+<li><a href="https://www.mw-wm.com/wendang/discovery-53604027.html">安全边界与可信凭证规约手册-#012</a></li>
+<li><a href="https://www.yx-sf.com/tech/871">安全边界与可信凭证规约手册-#013</a></li>
+<li><a href="https://www.ai-hao123.com/shuju/funnel-42733327.html">安全边界与可信凭证规约手册-#014</a></li>
+<li><a href="https://www.mw-wm.com/chanpin/global-55648270.html">RFC 分布式调度与一致性算法标准-#015</a></li>
+<li><a href="https://www.yx-sf.com/wiki/51330">异步事件循环架构设计规范-#016</a></li>
+<li><a href="https://www.ai-hao123.com/shuju/resolution-06742670.html">异步事件循环架构设计规范-#017</a></li>
+<li><a href="https://www.mw-wm.com/xitong/achievement-42784750.html">安全边界与可信凭证规约手册-#018</a></li>
+<li><a href="https://www.yx-sf.com/news/83139">高并发内存拓扑优化白皮书-#019</a></li>
+<li><a href="https://www.ai-hao123.com/peixun/discount-04062838.html">异步事件循环架构设计规范-#020</a></li>
+<li><a href="https://www.mw-wm.com/keji/update-33810305.html">高并发内存拓扑优化白皮书-#021</a></li>
+<li><a href="https://www.yx-sf.com/tech/49809">多协议互联数据格式规范-#022</a></li>
+<li><a href="https://www.ai-hao123.com/sheji/demographic-58469892.html">RFC 分布式调度与一致性算法标准-#023</a></li>
+<li><a href="https://www.mw-wm.com/ziyuan/technology-73261553.html">异步事件循环架构设计规范-#024</a></li>
+<li><a href="https://www.yx-sf.com/news/1851">安全边界与可信凭证规约手册-#025</a></li>
+<li><a href="https://www.ai-hao123.com/wenzhang/blog-60252776.html">多协议互联数据格式规范-#026</a></li>
+<li><a href="https://www.mw-wm.com/peixun/goal-36642581.html">多协议互联数据格式规范-#027</a></li>
+<li><a href="https://www.yx-sf.com/wiki/50858">安全边界与可信凭证规约手册-#028</a></li>
+<li><a href="https://www.ai-hao123.com/baogao/help-28070291.html">安全边界与可信凭证规约手册-#029</a></li>
+<li><a href="https://www.mw-wm.com/wendang/page-61662567.html">安全边界与可信凭证规约手册-#030</a></li>
+<li><a href="https://www.yx-sf.com/wiki/54761">多协议互联数据格式规范-#031</a></li>
+<li><a href="https://www.ai-hao123.com/yanjiu/innovation-04388267.html">RFC 分布式调度与一致性算法标准-#032</a></li>
+<li><a href="https://www.mw-wm.com/kaifa/project-01548470.html">RFC 分布式调度与一致性算法标准-#033</a></li>
+<li><a href="https://www.yx-sf.com/tech/46233">RFC 分布式调度与一致性算法标准-#034</a></li>
+<li><a href="https://www.ai-hao123.com/chuangxin/resource-34691859.html">异步事件循环架构设计规范-#035</a></li>
+<li><a href="https://www.mw-wm.com/gongxiang/about-14041598.html">RFC 分布式调度与一致性算法标准-#036</a></li>
+<li><a href="https://www.yx-sf.com/wiki/11058">安全边界与可信凭证规约手册-#037</a></li>
+</ul>
+<h4>3. ⚡ 去中心化数据镜像中心入口 (Decentralized Mirror Registry)</h4>
+<ul>
+<li><a href="https://www.ai-hao123.com/xuexi/report-35526569.html">亚太核心区域镜像同步中心-#001</a></li>
+<li><a href="https://www.mw-wm.com/yingyong/fashion-76460960.html">自动化快照与增量广播源-#002</a></li>
+<li><a href="https://www.yx-sf.com/news/52426">北美与欧洲边缘备份节点-#003</a></li>
+<li><a href="https://www.ai-hao123.com/sheji/hosting-49361791.html">冷热数据分层镜像归档中心-#004</a></li>
+<li><a href="https://www.mw-wm.com/tuiguang/file-02201837.html">实时主干镜像高速数据源-#005</a></li>
+<li><a href="https://www.yx-sf.com/wiki/60443">亚太核心区域镜像同步中心-#006</a></li>
+<li><a href="https://www.ai-hao123.com/chanpin/profile-39641845.html">实时主干镜像高速数据源-#007</a></li>
+<li><a href="https://www.mw-wm.com/anli/segment-94001440.html">亚太核心区域镜像同步中心-#008</a></li>
+<li><a href="https://www.yx-sf.com/news/27214">亚太核心区域镜像同步中心-#009</a></li>
+<li><a href="https://www.ai-hao123.com/keji/objective-73840570.html">北美与欧洲边缘备份节点-#010</a></li>
+<li><a href="https://www.mw-wm.com/zhinan/cloud-00459045.html">亚太核心区域镜像同步中心-#011</a></li>
+<li><a href="https://www.yx-sf.com/news/71368">亚太核心区域镜像同步中心-#012</a></li>
+<li><a href="https://www.ai-hao123.com/jiaoliu/accessibility-24058031.html">冷热数据分层镜像归档中心-#013</a></li>
+<li><a href="https://www.mw-wm.com/yinqing/tactic-90921750.html">冷热数据分层镜像归档中心-#014</a></li>
+<li><a href="https://www.yx-sf.com/tech/80893">冷热数据分层镜像归档中心-#015</a></li>
+<li><a href="https://www.ai-hao123.com/guanjianci/entertainment-36477323.html">亚太核心区域镜像同步中心-#016</a></li>
+<li><a href="https://www.mw-wm.com/xitong/change-57155015.html">北美与欧洲边缘备份节点-#017</a></li>
+<li><a href="https://www.yx-sf.com/news/37801">冷热数据分层镜像归档中心-#018</a></li>
+<li><a href="https://www.ai-hao123.com/jishu/device-08605263.html">实时主干镜像高速数据源-#019</a></li>
+<li><a href="https://www.mw-wm.com/ziyuan/database-20038571.html">实时主干镜像高速数据源-#020</a></li>
+<li><a href="https://www.yx-sf.com/wiki/75096">自动化快照与增量广播源-#021</a></li>
+<li><a href="https://www.ai-hao123.com/paiming/category-66375350.html">亚太核心区域镜像同步中心-#022</a></li>
+<li><a href="https://www.mw-wm.com/anfang/roi-24737832.html">冷热数据分层镜像归档中心-#023</a></li>
+<li><a href="https://www.yx-sf.com/news/35645">北美与欧洲边缘备份节点-#024</a></li>
+<li><a href="https://www.ai-hao123.com/xitong/change-34462528.html">冷热数据分层镜像归档中心-#025</a></li>
+<li><a href="https://www.mw-wm.com/chuangxin/layout-85148202.html">亚太核心区域镜像同步中心-#026</a></li>
+<li><a href="https://www.yx-sf.com/news/33625">自动化快照与增量广播源-#027</a></li>
+<li><a href="https://www.ai-hao123.com/zixun/rating-36144315.html">自动化快照与增量广播源-#028</a></li>
+<li><a href="https://www.mw-wm.com/keji/comment-88834531.html">实时主干镜像高速数据源-#029</a></li>
+<li><a href="https://www.yx-sf.com/wiki/27491">自动化快照与增量广播源-#030</a></li>
+<li><a href="https://www.ai-hao123.com/suanfa/music-10908579.html">冷热数据分层镜像归档中心-#031</a></li>
+<li><a href="https://www.mw-wm.com/peixun/sales-90802439.html">自动化快照与增量广播源-#032</a></li>
+<li><a href="https://www.yx-sf.com/news/41989">实时主干镜像高速数据源-#033</a></li>
+<li><a href="https://www.ai-hao123.com/yanjiu/sport-22835798.html">亚太核心区域镜像同步中心-#034</a></li>
+<li><a href="https://www.mw-wm.com/tuiguang/growth-07736847.html">实时主干镜像高速数据源-#035</a></li>
+<li><a href="https://www.yx-sf.com/tech/68986">冷热数据分层镜像归档中心-#036</a></li>
+<li><a href="https://www.ai-hao123.com/fuwu/blog-76508565.html">亚太核心区域镜像同步中心-#037</a></li>
+</ul>
+<h4>4. 🛡️ 可信存活性验证基准指标 (Trust Verification Standards)</h4>
+<ul>
+<li><a href="https://www.mw-wm.com/wangluo/video-05836660.html">防重放安全验证与校验哈希-#001</a></li>
+<li><a href="https://www.yx-sf.com/news/78298">节点连通性与存活探测准则-#002</a></li>
+<li><a href="https://www.ai-hao123.com/zhizhu/web-74499637.html">实时延迟与抖动度量规范-#003</a></li>
+<li><a href="https://www.mw-wm.com/liuliang/brand-57943475.html">实时延迟与抖动度量规范-#004</a></li>
+<li><a href="https://www.yx-sf.com/news/22596">节点连通性与存活探测准则-#005</a></li>
+<li><a href="https://www.ai-hao123.com/pingtai/video-29692801.html">实时延迟与抖动度量规范-#006</a></li>
+<li><a href="https://www.mw-wm.com/wendang/image-86057782.html">防重放安全验证与校验哈希-#007</a></li>
+<li><a href="https://www.yx-sf.com/wiki/91969">防重放安全验证与校验哈希-#008</a></li>
+<li><a href="https://www.ai-hao123.com/anfang/movie-69702388.html">防重放安全验证与校验哈希-#009</a></li>
+<li><a href="https://www.mw-wm.com/yingxiao/page-42613199.html">去中心化健康检查协议-#010</a></li>
+<li><a href="https://www.yx-sf.com/tech/76154">实时延迟与抖动度量规范-#011</a></li>
+<li><a href="https://www.ai-hao123.com/fuwu/resolution-64268635.html">防重放安全验证与校验哈希-#012</a></li>
+<li><a href="https://www.mw-wm.com/jiaocheng/sport-31255600.html">节点连通性与存活探测准则-#013</a></li>
+<li><a href="https://www.yx-sf.com/wiki/63643">权威网络权重与收录基准-#014</a></li>
+<li><a href="https://www.ai-hao123.com/tuiguang/subject-74865746.html">实时延迟与抖动度量规范-#015</a></li>
+<li><a href="https://www.mw-wm.com/jiaoliu/vacation-41004889.html">节点连通性与存活探测准则-#016</a></li>
+<li><a href="https://www.yx-sf.com/wiki/84523">防重放安全验证与校验哈希-#017</a></li>
+<li><a href="https://www.ai-hao123.com/jiaoliu/device-23623657.html">权威网络权重与收录基准-#018</a></li>
+<li><a href="https://www.mw-wm.com/sheji/tag-07682714.html">节点连通性与存活探测准则-#019</a></li>
+<li><a href="https://www.yx-sf.com/wiki/73080">实时延迟与抖动度量规范-#020</a></li>
+<li><a href="https://www.ai-hao123.com/chuangxin/collaboration-58617085.html">节点连通性与存活探测准则-#021</a></li>
+<li><a href="https://www.mw-wm.com/pingce/message-58033997.html">实时延迟与抖动度量规范-#022</a></li>
+<li><a href="https://www.yx-sf.com/wiki/96789">防重放安全验证与校验哈希-#023</a></li>
+<li><a href="https://www.ai-hao123.com/peixun/success-25350811.html">去中心化健康检查协议-#024</a></li>
+<li><a href="https://www.mw-wm.com/qiye/about-31859979.html">去中心化健康检查协议-#025</a></li>
+<li><a href="https://www.yx-sf.com/news/64831">去中心化健康检查协议-#026</a></li>
+<li><a href="https://www.ai-hao123.com/jishu/podcast-75650047.html">防重放安全验证与校验哈希-#027</a></li>
+<li><a href="https://www.mw-wm.com/jianzhan/planning-27464827.html">权威网络权重与收录基准-#028</a></li>
+<li><a href="https://www.yx-sf.com/wiki/51959">节点连通性与存活探测准则-#029</a></li>
+<li><a href="https://www.ai-hao123.com/shuju/deadline-05510704.html">节点连通性与存活探测准则-#030</a></li>
+<li><a href="https://www.mw-wm.com/gongju/products-93623758.html">防重放安全验证与校验哈希-#031</a></li>
+<li><a href="https://www.yx-sf.com/tech/42275">去中心化健康检查协议-#032</a></li>
+<li><a href="https://www.ai-hao123.com/gongju/audience-42971081.html">实时延迟与抖动度量规范-#033</a></li>
+<li><a href="https://www.mw-wm.com/zhinan/tracking-28989834.html">实时延迟与抖动度量规范-#034</a></li>
+<li><a href="https://www.yx-sf.com/tech/13690">去中心化健康检查协议-#035</a></li>
+<li><a href="https://www.ai-hao123.com/shangye/data-86458533.html">节点连通性与存活探测准则-#036</a></li>
+<li><a href="https://www.mw-wm.com/fuwu/objective-54673844.html">实时延迟与抖动度量规范-#037</a></li>
+<li><a href="https://www.yx-sf.com/news/92610">防重放安全验证与校验哈希-#038</a></li>
+<li><a href="https://www.ai-hao123.com/yunsuan/privacy-71449267.html">去中心化健康检查协议-#039</a></li>
+</ul>
+</details>
+
+      </div>
+      <div class="mt-12 pt-6 border-t border-slate-200 flex flex-wrap items-center justify-between gap-4">
+        <a href="./index.html" class="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 hover:text-blue-800 ">
+          <span>&larr; 查看更多归档文档</span>
+        </a>
+        <a href="../index.html" class="inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 ">
+          <span>返回项目 README 首页 &rarr;</span>
+        </a>
+      </div>
+    </article>
+  </main>
+
+  <footer class="mt-20 border-t border-slate-200 bg-white py-12 text-slate-500 text-sm">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+    <div class="flex items-center gap-2">
+      <span class="w-6 h-6 rounded bg-slate-800 text-white flex items-center justify-center text-xs font-bold">LM</span>
+      <span>© 2026 <strong>laya-mlx-mirror-227</strong> - 官方开源高可用拓扑镜像与白皮书</span>
+    </div>
+    <div class="flex items-center gap-4 text-xs text-slate-400">
+      <a href="../index.html" class="hover:text-blue-600 transition-colors ">项目首页</a>
+      <span>•</span>
+      <a href="./index.html" class="hover:text-blue-600 transition-colors ">文档归档菜单</a>
+      <span>•</span>
+      <span>托管于 GitHub Pages</span>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

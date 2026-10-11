@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laya MLX performance research - laya-mlx-mirror-227 文档归档</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+      :root {
+        --color-primary: #2563eb;
+        --color-primary-hover: #1d4ed8;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        line-height: 1.68;
+        color: #1e293b;
+      }
+      .markdown-body {
+        color: #1e293b;
+      }
+      .markdown-body h1 {
+        font-size: 2.25rem;
+        font-weight: 800;
+        margin-top: 1.8rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.6rem;
+        border-bottom: 2px solid #e2e8f0;
+        color: #0f172a;
+        line-height: 1.25;
+      }
+      .markdown-body h2 {
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin-top: 1.6rem;
+        margin-bottom: 0.8rem;
+        padding-bottom: 0.4rem;
+        border-bottom: 1px solid #f1f5f9;
+        color: #1e293b;
+      }
+      .markdown-body h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-top: 1.3rem;
+        margin-bottom: 0.6rem;
+        color: #334155;
+      }
+      .markdown-body p {
+        margin-top: 0.8rem;
+        margin-bottom: 0.8rem;
+        line-height: 1.7;
+      }
+      .markdown-body a {
+        color: #2563eb;
+        text-decoration: none;
+        border-bottom: 1px dashed #93c5fd;
+        transition: all 0.2s ease;
+      }
+      .markdown-body a:hover {
+        color: #1d4ed8;
+        border-bottom: 1px solid #1d4ed8;
+        background-color: #eff6ff;
+        border-radius: 2px;
+      }
+      .markdown-body ul, .markdown-body ol {
+        padding-left: 1.5rem;
+        margin-top: 0.6rem;
+        margin-bottom: 0.6rem;
+      }
+      .markdown-body ul {
+        list-style-type: disc;
+      }
+      .markdown-body ol {
+        list-style-type: decimal;
+      }
+      .markdown-body li {
+        margin-top: 0.25rem;
+        margin-bottom: 0.25rem;
+      }
+      .markdown-body pre {
+        background-color: #0f172a;
+        color: #e2e8f0;
+        padding: 1rem 1.2rem;
+        border-radius: 0.75rem;
+        overflow-x: auto;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.875rem;
+        margin: 1rem 0;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+      .markdown-body code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.875em;
+        padding: 0.15rem 0.35rem;
+        background-color: #f1f5f9;
+        color: #0f172a;
+        border-radius: 0.35rem;
+        border: 1px solid #e2e8f0;
+      }
+      .markdown-body pre code {
+        background-color: transparent;
+        padding: 0;
+        border: none;
+        color: inherit;
+      }
+      .markdown-body blockquote {
+        margin: 1rem 0;
+        padding: 0.75rem 1.25rem;
+        background-color: #f8fafc;
+        border-left: 4px solid #3b82f6;
+        border-radius: 0 0.5rem 0.5rem 0;
+        color: #475569;
+      }
+      .markdown-body table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1.2rem 0;
+        display: block;
+        overflow-x: auto;
+      }
+      .markdown-body th, .markdown-body td {
+        border: 1px solid #cbd5e1;
+        padding: 0.6rem 1rem;
+        text-align: left;
+      }
+      .markdown-body th {
+        background-color: #f1f5f9;
+        font-weight: 600;
+      }
+      .markdown-body tr:nth-child(even) {
+        background-color: #f8fafc;
+      }
+      .markdown-body hr {
+        height: 1px;
+        border: none;
+        background-color: #e2e8f0;
+        margin: 2rem 0;
+      }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col antialiased">
+  <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-slate-200">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <a href="../index.html" class="flex items-center gap-2 group">
+        <span class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-white font-bold text-sm shadow-sm group-hover:scale-105 transition-transform ">LM</span>
+        <span class="font-bold text-slate-900 tracking-tight text-lg group-hover:text-blue-600 transition-colors ">laya-mlx-mirror-227</span>
+      </a>
+      <span class="hidden md:inline-block text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-mono ">Pages Docs</span>
+    </div>
+    <div class="flex items-center gap-1 sm:gap-2 text-sm">
+      <a href="../index.html" class="px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 text-slate-600 hover:text-blue-600 hover:bg-slate-50 font-medium ">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        <span>首页 (README)</span>
+      </a>
+      <a href="./index.html" class="px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 text-blue-600 bg-blue-50 font-semibold ">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+        <span>文档归档 (Docs)</span>
+        <span class="inline-block w-2 h-2 rounded-full bg-blue-600"></span>
+      </a>
+      <div class="h-4 w-px bg-slate-200 mx-1"></div>
+      <a href="https://github.com/shijiuwei/laya-mlx-mirror-227" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1.5 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-50 transition-colors flex items-center gap-1.5 ">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+        <span class="hidden sm:inline">GitHub</span>
+      </a>
+      <a href="https://github.com/shijiuwei/laya-mlx-mirror-227/wiki" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1.5 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-50 transition-colors flex items-center gap-1.5 ">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <span class="hidden sm:inline">Wiki</span>
+      </a>
+    </div>
+  </div>
+</nav>
+
+  <!-- 面包屑与顶部导航 -->
+  <header class="bg-white border-b border-slate-200 py-6 px-4 sm:px-6">
+    <div class="max-w-4xl mx-auto">
+      <nav class="flex items-center gap-2 text-xs text-slate-500 mb-2 font-medium">
+        <a href="../index.html" class="hover:text-blue-600 transition-colors ">首页</a>
+        <span>/</span>
+        <a href="./index.html" class="hover:text-blue-600 transition-colors ">文档归档菜单</a>
+        <span>/</span>
+        <span class="text-slate-800 font-semibold">技术文档</span>
+      </nav>
+      <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Laya MLX performance research</h1>
+        <a href="./index.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-colors ">
+          <span>&larr; 返回文档归档菜单</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 主体正文区域 -->
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 py-10 flex-1 w-full">
+    <article class="bg-white p-6 sm:p-12 rounded-2xl shadow-sm border border-slate-200">
+      <div class="markdown-body">
+        <h1>Laya MLX performance research</h1>
+<p>Research date: 2026-09-19. Target: Apple M3 Max, 40 GPU cores, 128 GiB unified memory, MLX/MLX Metal 0.32.2. This is a static review of the native runtime, installed MLX implementation, official documentation, and existing benchmark JSON. <strong>No GPU benchmark or model inference was run for this research. None of the proposed optimizations below has a measured speedup in this report.</strong></p>
+<p>The first experiments should be whole-model compilation and representative batch scheduling, followed by selective quantized matrix multiplication. These address the dominant repeated work. A specialized local-attention kernel is a credible longer-term project for long inputs. Exact pruning of the last decision-head layer is feasible, but its whole-model arithmetic saving is only a few percent. Large improvements without changing the checkpoint will require improving the dense backbone, eliminating genuinely redundant requests, or finding a measured implementation bottleneck; simply replacing an activation or enabling another attention flag is unlikely to suffice.</p>
+<h2>What the existing measurements establish</h2>
+<p>The following are existing <strong>end-to-end median latencies</strong>, including prompt preparation and result formatting, with synchronized GPU completion, five warmups, and 50 measured iterations. Model loading and downloads are excluded. The benchmark allows a batch of 64 questions; the public runtime default is 16, so the 50-question result is not the default API configuration.</p>
+<table><thead><tr><th>Checkpoint / precision</th><th style="text-align: right">Short 1 question</th><th style="text-align: right">Short 10 questions</th><th style="text-align: right">Short 50 questions</th><th style="text-align: right">Long 1 question</th><th style="text-align: right">Long 10 questions</th></tr></thead><tbody>
+<tr><td>Laya MLX FP16</td><td style="text-align: right">13.421 ms</td><td style="text-align: right">71.068 ms</td><td style="text-align: right">336.030 ms</td><td style="text-align: right">44.927 ms</td><td style="text-align: right">420.987 ms</td></tr>
+<tr><td>Laya MLX FP32</td><td style="text-align: right">15.954 ms</td><td style="text-align: right">98.820 ms</td><td style="text-align: right">450.712 ms</td><td style="text-align: right">61.331 ms</td><td style="text-align: right">534.242 ms</td></tr>
+<tr><td>Laya stock Torch MPS FP32</td><td style="text-align: right">24.918 ms</td><td style="text-align: right">95.265 ms</td><td style="text-align: right">497.856 ms</td><td style="text-align: right">65.581 ms</td><td style="text-align: right">586.594 ms</td></tr>
+<tr><td>Multilingual MLX FP16</td><td style="text-align: right">7.390 ms</td><td style="text-align: right">27.386 ms</td><td style="text-align: right">127.565 ms</td><td style="text-align: right">37.635 ms</td><td style="text-align: right">389.487 ms</td></tr>
+<tr><td>Multilingual MLX FP32</td><td style="text-align: right">7.988 ms</td><td style="text-align: right">32.337 ms</td><td style="text-align: right">151.387 ms</td><td style="text-align: right">47.208 ms</td><td style="text-align: right">451.331 ms</td></tr>
+<tr><td>Multilingual stock Torch MPS FP32</td><td style="text-align: right">19.349 ms</td><td style="text-align: right">43.158 ms</td><td style="text-align: right">194.171 ms</td><td style="text-align: right">52.939 ms</td><td style="text-align: right">534.492 ms</td></tr>
+</tbody></table>
+<p>Sources: <a href="../benchmarks/results/laya-mlx-float16.json">Laya FP16</a>, <a href="../benchmarks/results/laya-mlx-float32.json">Laya FP32</a>, <a href="../benchmarks/results/laya-torch-mps-float32.json">Laya MPS</a>, <a href="../benchmarks/results/laya-multilingual-mlx-float16.json">multilingual FP16</a>, <a href="../benchmarks/results/laya-multilingual-mlx-float32.json">multilingual FP32</a>, and <a href="../benchmarks/results/laya-multilingual-torch-mps-float32.json">multilingual MPS</a>. Long inputs contain 512 tokens for Laya and 1024 for multilingual; comparing their long-input latencies is therefore not a comparison at equal sequence length. Short padded lengths are 93 and 91, respectively. Torch comparisons must retain the FP32 label: they combine a backend change with a precision change when compared against MLX FP16.</p>
+<p>There is meaningful run variability. For example, the multilingual FP16 long 10-question run has p50 389.487 ms, p95 462.319 ms, and maximum 619.663 ms. Its short single-question forward median is 8.023 ms while the independently measured end-to-end median is 7.390 ms. Subtracting those medians would produce a nonsensical negative preprocessing time. The current files do <strong>not</strong> isolate tokenizer, Python dispatch, individual GPU kernels, or synchronization costs. They establish useful baselines, not a kernel-level bottleneck diagnosis.</p>
+<p>The <a href="../benchmarks/results/">validation reports</a> record 63/63 argmax agreement for each of three checkpoints in FP32 and FP16, and 100 finite, deterministic repeated calls per variant: 378/378 answer agreements and 600 repeated calls altogether. These are regression checks over a small fixture corpus, including repeated questions. They are not evidence that future quantization or architecture changes preserve general task accuracy.</p>
+<h2>Why dense matrix multiplication deserves priority</h2>
+<p>The <a href="../laya_mlx/model.py">model implementation</a> applies QKV and output projections, a gated encoder MLP, and two conventional transformer decision-head layers to every padded token. Let <code>D</code> be hidden size, <code>I</code> encoder intermediate size, <code>N</code> encoder layer count, and <code>H</code> decision-head layer count. The number of matrix weights used per token in these blocks is:</p>
+<pre><code class="language-text">A = N * (4 * D^2 + 3 * D * I) + H * 12 * D^2
+dense FLOPs per batch ~= 2 * B * L * A
+dense attention FLOPs ~= 4 * B * (N + H) * L^2 * D
+</code></pre>
+<p>These estimates count multiply and add separately and exclude normalization, activations, embeddings, scoring, masking, memory movement, and kernel overhead. They are an arithmetic model, not a runtime profile.</p>
+<table><thead><tr><th>Checkpoint family</th><th>D / I / encoder layers</th><th style="text-align: right">Token embedding weights</th><th style="text-align: right">Main token-wise matrix weights A</th><th>Encoder global / local layers</th></tr></thead><tbody>
+<tr><td>Laya / typed decisions</td><td>1024 / 2624 / 28</td><td style="text-align: right">51,576,832</td><td style="text-align: right">368,312,320</td><td>10 / 18</td></tr>
+<tr><td>Multilingual</td><td>768 / 1152 / 22</td><td style="text-align: right">196,608,000</td><td style="text-align: right">124,452,864</td><td>8 / 14</td></tr>
+</tbody></table>
+<p>The multilingual checkpoint's approximately 322 million total parameters include 196.6 million embedding parameters. Only selected embedding rows are gathered for inference; this is not a full vocabulary projection. Its main per-token matrix workload is approximately one third of the English model's, despite their total parameter counts appearing much closer. This is consistent with the measured short-batch latency gap, although it does not prove a particular hardware bottleneck. Embedding-only quantization would predominantly reduce resident weight size, especially for multilingual; it need not improve inference latency.</p>
+<p>With the current dense attention path, attention products account for about 1.5% of modeled FLOPs at L=93 for Laya, 7.9% at L=512 for Laya, and 23.3% at L=1024 for multilingual. Their fraction of <strong>wall time</strong> can differ substantially. A profiler should distinguish matrix kernels, attention kernels, elementwise kernels, CPU graph construction, and idle gaps before committing to custom Metal work.</p>
+<h2>Prioritized experiments</h2>
+<table><thead><tr><th>Priority</th><th>Experiment</th><th>Best target</th><th>Main tradeoff / acceptance condition</th></tr></thead><tbody>
+<tr><td>P0</td><td>Profile one short and one long shape; compile the model or encoder blocks</td><td>Single-request latency and Python dispatch</td><td>Keep identical outputs within the existing precision tolerance; measure first-use compilation separately</td></tr>
+<tr><td>P0</td><td>Tune batching by actual token budget and length distribution</td><td>Many distinct questions and mixed-length traffic</td><td>Optimize throughput subject to a p95 latency and memory budget; account for queueing</td></tr>
+<tr><td>P1</td><td>Quantize selected backbone linear layers, starting at 8-bit then 4-bit</td><td>Weight traffic and potentially dense inference</td><td>Quality and calibration gates; actual M3 Max speed can regress</td></tr>
+<tr><td>P1</td><td>Cache shared state tokenization and stable question templates</td><td>Many questions sharing a state or repeated rubrics</td><td>Exact token identity; bounded cache; separate cached and uncached results</td></tr>
+<tr><td>P1</td><td>Compute only required outputs of the final head layer</td><td>Every workload, especially longer sequences</td><td>Exact dependency pruning; modest whole-model arithmetic saving</td></tr>
+<tr><td>P2</td><td>Genuine local-window attention with tile bounds</td><td>512/1024-token workloads</td><td>New kernel complexity; preserve bidirectional window and padding semantics</td></tr>
+<tr><td>P2</td><td>Fuse residual/norm or GELU/gate only where the profile warrants it</td><td>Small-kernel overhead or activation traffic</td><td>Existing fast kernels already cover much of this; keep exact GELU semantics</td></tr>
+<tr><td>Separate product feature</td><td>Deduplicate identical forward inputs</td><td>Workloads that actually repeat questions</td><td>Report unique inference count and cache hits; do not present it as a general kernel speedup</td></tr>
+</tbody></table>
+<h3>Compile the complete evaluated inference path</h3>
+<p><code>Agent.forward()</code> currently constructs arrays, calls <code>self.model</code>, and evaluates the result. There is no enclosing <code>mx.compile</code> at model or block level. Fixed-shape compilation can reduce Python graph construction and fuse supported operations. MLX documents shape specialization and explicit state capture; it also warns that shapeless compilation cannot safely preserve arbitrary shape-dependent Python operations. See the <a href="https://www.yx-sf.com/wiki/22758">official compilation guide</a>.</p>
+<p>Start with a compiled callable created <strong>after loading, casting, and evaluating weights</strong>, using normal shape specialization. Keep the existing uncompiled callable for parity comparison and CPU compatibility. For a frozen inference model, weights can remain captured for that model instance; if weights or module structure change, rebuild the callable or explicitly capture the relevant state. Do not reuse a compiled closure across checkpoint replacements.</p>
+<p>Test a whole-model wrapper and, if tracing limitations or compilation cost make that unattractive, compile encoder blocks and the head separately. The current code reads <code>x.shape</code> into Python integers, reshapes with explicit batch/length values, creates <code>arange(length)</code> masks, and indexes markers using a shape-derived row range. Applying <code>shapeless=True</code> to this complete graph without redesign is unsafe. Moving dynamic mask construction outside a compiled block and using shape-independent flatten/unflatten operations may enable a later shapeless variant; verify it across changed B, L, and marker counts.</p>
+<p>Shape buckets can limit retracing, but padding has a compute cost. Padding L=93 to 96 adds approximately 3.2% token-wise work; padding it to 128 adds approximately 37.6%. Compare exact-shape compilation with small length multiples and a bounded set of workload-informed buckets. Include <code>(batch size, padded length, marker slots, dtype, device/model instance)</code> in cache policy decisions, and measure cold compilation latency and retained memory under shape churn.</p>
+<p>The standalone <code>forward</code> benchmark in <a href="../benchmarks/worker.py">worker.py</a> calls <code>agent.model</code> directly. If compilation is added only in <code>Agent.forward</code>, the current forward benchmark would bypass it while the end-to-end benchmark would use it. Both paths must explicitly select the same candidate implementation for a meaningful comparison. Keep <code>mx.eval</code> and GPU synchronization in the timing procedure: measuring graph construction alone would not measure inference.</p>
+<h3>Batch by useful tokens, then inspect matrix scheduling</h3>
+<p><a href="../laya_mlx/agent.py">collate_items</a> right-pads each chunk to its longest sequence; the runtime groups questions in insertion order. For heterogeneous traffic, sort or bucket by prepared length, use a token budget in addition to a question-count ceiling, and restore original question IDs and output order. Compare batches of 1, 2, 4, 8, 16, 32, and 64 only where representative of the service. For online requests, include time waiting for a batch; offline questions/second alone can hide unacceptable latency.</p>
+<p>The current short 50-question workload wastes approximately 8.9% of padded tokens for Laya and 5.8% for multilingual. Long benchmark rows have no padding waste. Consequently, unpadding or sorting alone has limited arithmetic upside on <strong>these</strong> fixtures. A mixed-length distribution, including one long question among many short ones, is necessary to reveal the production benefit. Padding removal must preserve per-example RoPE positions, marker positions, and attention boundaries; concatenating examples into one sequence without an isolation mask changes the model.</p>
+<p>For dense kernels, inspect actual shapes and strides. QKV is already a single projection, and the two encoder MLP input branches already share a projection. Splitting those indiscriminately would add launches. Compare explicit flattening of contiguous <code>[B,L,D]</code> input into <code>[B*L,D]</code> only if the profiler or MLX dispatch trace shows undesirable batched GEMMs; the framework may already flatten efficiently. Source inspection alone does not justify claiming a missed GEMM optimization.</p>
+<p>Do not insert a synchronization after every layer in the production implementation. The present runtime evaluates once per chunk. Extra waits could remove CPU/GPU overlap and obscure a scheduling improvement; layer-level profiling should be a separate diagnostic run.</p>
+<h3>Quantization: target the backbone and implement its storage contract</h3>
+<p>The installed MLX 0.32.2 <a href="https://www.mw-wm.com/xitong/education-61468580.html">quantized layer implementation</a> provides <code>nn.quantize(..., class_predicate=...)</code> and <code>QuantizedLinear</code>, with weight-only matrix multiplication through <code>mx.quantized_matmul</code>. Grouped affine quantization supports 8-bit and 4-bit experiments. Start with encoder linear layers at group size 64, retaining activations, norms, type embeddings, scorer, and action head in FP16. Then independently add decision-head linear layers and optionally embedding quantization. Measure each variant; weight-only kernels can lose to FP16 GEMMs at high token counts.</p>
+<p>There are concrete integration hazards in the present loader and model:</p>
+<ol>
+<li><code>Agent.__init__</code> casts <strong>every</strong> stored weight to a floating dtype and instantiates only dense modules before strict loading. A quantized checkpoint requires metadata describing the selected modules, group size, bit width, and mode; instantiate matching quantized modules before loading and preserve packed integer weights. A floating cast of packed weights is not valid loading.</li>
+<li>The first action-head linear layer has input width <code>D+4</code>, namely 1028 or 772, which is not divisible by an affine group size of 32, 64, or 128. A blanket quantization call is therefore unsuitable. Check every selected layer's input width before conversion.</li>
+<li><code>DecisionModel.__call__</code> chooses the action-head input dtype from <code>self.act_head.layers[0].weight.dtype</code>. For a quantized layer that weight would be packed integer storage, not the desired activation dtype. Excluding the action head avoids this path initially; supporting it later requires an explicit activation-dtype contract.</li>
+<li>Quantization changes logits and calibrated probabilities. The existing small FP16 fixture agreement is insufficient evidence for 4-bit quality. Use held-out labeled choice, score, and noul tasks, multilingual inputs, close decisions, different option counts, and escalation examples. Track argmax agreement, task accuracy, score error, probability drift, calibration, and action probabilities. Saturated action outputs can hide large action-logit changes.</li>
+</ol>
+<p>For FP16 affine scales and offsets with group size 64, the approximate matrix storage is <code>bits/8 + 4/64</code> bytes per parameter: 1.0625 bytes at 8-bit and 0.5625 bytes at 4-bit, compared with 2 bytes at FP16. These are storage estimates for quantized matrices, excluding other tensors and packaging overhead; they are not speedup estimates. The <a href="https://www.mw-wm.com/anli/system-96606799.html">official quantize API</a> describes group divisibility and formats.</p>
+<p>Newer low-bit formats should be evaluated against the actual M3 Max backend, not assumed to use hardware from later Apple chips. MLX's NAX availability check requires a newer architecture generation than the recorded <code>applegpu_g15s</code> device. See the <a href="https://www.ai-hao123.com/kaifa/blog-41206964.html">MLX 0.32.2 device check</a>.</p>
+<h3>Reuse CPU preparation where the inputs are actually identical</h3>
+<p><a href="../laya_mlx/common.py">build_sequence</a> serializes, sanitizes, and tokenizes the same state separately for every question. It also separately tokenizes each instruction and option. The Rust tokenizer is already used directly; replacing Transformers tokenization is not a remaining optimization.</p>
+<p>Serialize and sanitize the state once per <code>prepare</code> call, encode it once, and slice its token IDs to each question's available room. Cache immutable prepared question prefixes when the same rubric is used across states, with keys that include tokenizer identity/revision, question type, ordered criteria, instruction serialization, special-token sanitation, and token budgets. Bounded caches must not reuse results after tokenizer or configuration changes. Batched tokenizer encoding is another experiment, provided its output exactly matches the current sequence of independent encodes.</p>
+<p>Do not tokenize a newly concatenated prompt as a substitute for concatenating independently encoded pieces: subword boundaries can change. Verify byte-for-byte input IDs, attention masks, marker positions, qtypes, truncation behavior, structured criteria, mask literals, empty inputs, and output mapping.</p>
+<p>For the long benchmark, the state repeats a sentence 200 times before truncation. Avoiding N repeated state encodes could help CPU preparation, but the existing end-to-end/forward timing difference does not measure that saving. Benchmark <code>prepare</code>, collate/array construction, forward, and postprocessing independently, then confirm the end-to-end result with a nonrepeating held-out corpus.</p>
+<p><strong>A decoder KV cache does not apply to this encoder.</strong> Its first layer is global bidirectional attention; state-token representations depend on the question, options, and their positions. Reusing state hidden states or K/V across different questions changes results. Tokenization and identical whole-input results can be cached; arbitrary contextual encoder state cannot.</p>
+<h3>Exactly prune the final decision-head outputs</h3>
+<p>After the last <code>HeadLayer</code>, only the <code>[CLS]</code> token and option-marker tokens are consumed. Earlier head layers must still produce all tokens, because the final layer reads their K/V. In the final layer alone:</p>
+<ol>
+<li>Normalize all input tokens and compute all K/V.</li>
+<li>Gather Q at <code>[CLS]</code> and valid option positions and run those queries against the complete masked K/V sequence.</li>
+<li>Apply the output projection, residual, second norm, and feed-forward network only to those selected positions.</li>
+<li>Use the selected <code>[CLS]</code> output for the action head and selected marker outputs for scoring; preserve marker padding and original order.</li>
+</ol>
+<p>A first implementation can retain the fused full QKV projection and gather Q afterward. A more aggressive variant splits its weights into a full-length KV projection and selected-token Q projection. That saves more arithmetic but may make GEMM scheduling less efficient. Duplicate padded marker indices are harmless only if masked results remain unobservable. The 1-option, many-option, and variable-marker cases need explicit parity checks. Since fewer queries may select a different SDPA kernel, mathematical equivalence does not imply bitwise identical floating-point results.</p>
+<p>With <code>R = 1 + number of option slots</code>, retaining full QKV removes approximately <code>18 * B * (L-R) * D^2</code> dense FLOPs and <code>4 * B * L * (L-R) * D</code> attention FLOPs from the last head layer. Splitting Q/KV changes the dense coefficient from 18 to 20. Relative to the whole-model arithmetic estimate above, using R=5 gives:</p>
+<table><thead><tr><th>Checkpoint / length</th><th style="text-align: right">Keep fused full QKV</th><th style="text-align: right">Also compute only selected Q</th></tr></thead><tbody>
+<tr><td>Laya, L=93</td><td style="text-align: right">2.44%</td><td style="text-align: right">2.70%</td></tr>
+<tr><td>Laya, L=512</td><td style="text-align: right">2.60%</td><td style="text-align: right">2.86%</td></tr>
+<tr><td>Typed decisions, L=1024</td><td style="text-align: right">2.66%</td><td style="text-align: right">2.90%</td></tr>
+<tr><td>Multilingual, L=93</td><td style="text-align: right">4.03%</td><td style="text-align: right">4.47%</td></tr>
+<tr><td>Multilingual, L=1024</td><td style="text-align: right">4.22%</td><td style="text-align: right">4.58%</td></tr>
+</tbody></table>
+<p>These are static FLOP reductions, not predicted latency reductions. The technique removes most work from one head layer, not most work from the model. It is useful because it preserves dependencies and is implementable without retraining, not because it promises a multiple of whole-model speed.</p>
+<h3>Build genuinely local attention only after measuring its contribution</h3>
+<p>All encoder attention calls already use <code>mx.fast.scaled_dot_product_attention</code>; RoPE is already <code>mx.fast.rope</code>; <code>nn.LayerNorm</code> calls the fast normalization primitive. MLX's <a href="https://www.ai-hao123.com/fenxi/reporting-79738947.html">attention API</a> accepts boolean masks and performs softmax in FP32. The current head dimension is 64. The <a href="https://www.mw-wm.com/yingxiao/objective-20212132.html">MLX 0.32.2 Metal dispatch</a> supports this shape with array masks and does not select the unfused fallback for it during inference. <strong>There is no evidence that Laya's boolean mask disables fused attention.</strong> <code>force_fused=True</code>, available in the installed version, is useful as a diagnostic assertion but should not be advertised as a new fast path here.</p>
+<p>The remaining limitation is structured sparsity. The implementation builds a dense local boolean mask of shape <code>[B,1,L,L]</code>. In the conventional <a href="https://www.yx-sf.com/wiki/70555">Metal attention kernel</a>, the noncausal loop traverses the full KV tile range; the array mask is applied to scores after QK multiplication. It preserves local-attention semantics without exploiting a local tile range.</p>
+<p>An exact specialized kernel can limit each query tile to the overlapping K/V window, keep FP32 softmax accumulation, and avoid a dense L-by-L mask. The correct window is <strong>bidirectional and inclusive</strong>: <code>abs(query_position - key_position) &lt;= 64</code>. Interior queries can see 129 positions, despite the configuration name <code>local_attention=128</code>. Full-attention layers and both decision-head layers must remain global. Padded keys must remain excluded, and unused padded queries need defined finite behavior.</p>
+<p>A lower-effort prototype can group query blocks with overlapping K/V slices and call the existing SDPA with a smaller exact mask. Use already-positioned RoPE Q/K, or explicitly retain absolute offsets. Prefer batched blocks over many Python calls, and account for duplicated K/V materialization. This prototype may lose to the current kernel at short lengths; it is a correctness and break-even experiment before maintaining custom Metal.</p>
+<p>The maximum reduction in modeled <strong>whole-model</strong> FLOPs from removing all forbidden local attention pairs is small for short inputs and more promising for long ones:</p>
+<table><thead><tr><th>Checkpoint / length</th><th style="text-align: right">Ideal total FLOP reduction from exact local sparsity</th></tr></thead><tbody>
+<tr><td>Laya, L=93</td><td style="text-align: right">0.086%</td></tr>
+<tr><td>Laya, L=512</td><td style="text-align: right">3.61%</td></tr>
+<tr><td>Typed decisions, L=1024</td><td style="text-align: right">7.69%</td></tr>
+<tr><td>Multilingual, L=93</td><td style="text-align: right">0.147%</td></tr>
+<tr><td>Multilingual, L=1024</td><td style="text-align: right">11.92%</td></tr>
+</tbody></table>
+<p>The estimates use <code>local_pairs = L*(2*r+1) - r*(r+1)</code> for L&gt;r, with r=64. They include all dense projections and both full-attention decision-head layers. They exclude mask generation and memory traffic. Runtime benefit can exceed or fall below the FLOP fraction because attention and GEMMs have different efficiency; only profiling can establish it. At 8192 tokens the tradeoff would be different, but the shipped agents limit inputs to 512 or 1024, so an 8192-token claim would require a separately supported workload.</p>
+<h3>Fusion beyond compilation</h3>
+<p>The installed exact <code>nn.gelu</code> is already decorated with shapeless compilation, and <code>nn.Linear</code> already uses a bias-aware <code>addmm</code> when appropriate. Whole-block compilation may still fuse the GELU with its gate multiplication, residual additions, casts, masks, and small score-feature operations. Inspect the compiled kernel graph before implementing an equivalent custom kernel.</p>
+<p>If activation traffic remains significant, prototype exact GELU-and-gate or residual-and-LayerNorm fusion. Preserve the current exact erf-based GELU; a tanh or sigmoid approximation changes the model and needs separate quality measurements. Inspect actual Q/K/V strides and copies before adding layout conversions: MLX's full attention implementation accepts a contiguous head dimension with other striding and writes an output layout convenient for merging heads. An unconditional contiguous copy may add work.</p>
+<p>The marker softmax, top-two sort, entropy, small action head, and NumPy result formatting are legitimate later targets only if measured. There are few option positions compared with hundreds of full-width transformer operations, so optimizing them first is unlikely to address the dominant path.</p>
+<h2>Protect benchmark meaning while pursuing aggressive gains</h2>
+<p>The current <a href="../benchmarks/common.py">workload generator</a> cycles <strong>three question definitions</strong> to construct 5, 10, or 50 questions. There are at most three unique model inputs in those batches. Exact per-call deduplication can avoid redundant inference in a real application, but it would disproportionately improve these fixtures. Keep this feature separate from kernel optimization and report <code>questions</code>, <code>unique_forward_inputs</code>, cache hits, and actual evaluated tokens. Reconstruct each original answer using its own labels, ordered criteria, and calibration metadata. Retain a suite with 50 genuinely different questions and a suite with deliberately duplicated inputs.</p>
+<p>Do not use cross-call result caching for the primary inference benchmark: it repeatedly calls exactly the same request. Report any cache experiment as such. Tokenizer-cache benchmarks should include both a repeated-rubric scenario and a fresh-input scenario.</p>
+<p>For each candidate, use this experiment design:</p>
+<ol>
+<li><strong>Hold the target constant.</strong> Record source revision/hash, model revision, dtype, compilation flags, selected quantized modules, token IDs or their hash, shape, marker count, batching policy, warmup, synchronization, and device. The existing <code>input_sha256</code> hashes state/questions rather than actual token tensors; it does not establish cross-tokenizer tensor identity. Re-run the baseline from the same final source revision because historical JSON source hashes differ.</li>
+<li><strong>Separate workload classes.</strong> Use fixed shapes for controlled kernel comparisons; real variable lengths for scheduling and compilation; distinct questions for throughput; repeated rubrics for legitimate CPU caching; and deliberately duplicated questions for deduplication. Include long-length tails and different option counts. Keep the source text and truncation identical within each backend comparison.</li>
+<li><strong>Measure cold and warm behavior.</strong> Record model load and first compilation separately. Measure preparation, graph construction, synchronized evaluated forward, output conversion, and end-to-end latency without treating independent medians as additive. Profile kernels in a separate run, because tracing can perturb latency.</li>
+<li><strong>Change one optimization at a time.</strong> Screen with the existing iteration count, then repeat finalists in alternating baseline/candidate blocks and collect enough samples for a credible p95, for example at least 200 timed requests per workload. Use a single active GPU benchmark, consistent power/thermal conditions, and preserve raw samples. Require an improvement larger than measured run variability.</li>
+<li><strong>Check correctness and stability.</strong> Compare against MLX at the same dtype and the existing FP32 reference; enforce token identity for scheduling and CPU preparation changes. Exercise lengths around 64, 128, and bucket boundaries; batches around chunk limits; one and many options; multilingual inputs; padding; and shape changes after compilation. Repeat changing-shape requests, watch both active and cache memory after warmup, and verify finite deterministic results within each configuration.</li>
+<li><strong>Apply stronger gates to approximate changes.</strong> Quantization, activation approximation, token pruning, early exits, and distillation require held-out task and calibration results beyond the small regression fixture. Preserve a separate model identity and benchmark label when changing trained behavior. A faster multilingual checkpoint or distilled model is a different model, not a speedup of the identical Laya checkpoint.</li>
+</ol>
+<p>For any measured hotspot occupying fraction <code>f</code> of end-to-end time and accelerated by factor <code>s</code>, use Amdahl's bound <code>1 / (1 - f + f/s)</code> to assess expected total impact. Use a measured time fraction for <code>f</code>; the arithmetic fractions above are not substitutes. The next concrete engineering decision should follow the compile/batching ablation and a short-versus-long kernel profile, not an unverified multiplier.</p>
+<h2>Documentation and reproducibility notes</h2>
+<p>The documentation lookup used the required Context7 workflow: one <code>library MLX</code> resolution, then separate official-documentation queries for compilation and fast attention, using <code>/websites/ml-explore_github_io_mlx_build_html</code> (three commands total). Installed <code>.pyi</code> and Python sources were inspected to verify MLX 0.32.2 behavior, including <code>force_fused</code>, quantization APIs, compiled GELU, and fast LayerNorm. Version-pinned upstream C++/Metal sources were read for dispatch and tile-loop details. No library was upgraded for this research.</p>
+<p>The two FP16 baseline files used for the detailed observations had these SHA-256 digests at inspection time:</p>
+<pre><code class="language-text">laya-mlx-float16.json
+63146dd664d039dde1a728b17aad896e491bd01ea36ea0786953691180e55b09
+
+laya-multilingual-mlx-float16.json
+9af74bd5a11e4edc15e6a8c9dc929a7b9fd2d19cb06f348cd0e04a076f912473
+</code></pre>
+<p>The main benchmark process was still producing additional artifacts during this research. The table deliberately cites complete baseline files already available when reviewed and makes no claims about unmeasured candidate implementations.</p>
+<hr />
+<details open>
+<summary><b>📚 官方开源技术规约与全息拓扑参考引文矩阵（共计 150 处权威节点索引）</b></summary>
+<blockquote>
+<p><strong>索引发布声明</strong>：本项目遵循开源与知识共享协议。以下引用矩阵涵盖分布式拓扑协议、官方架构白皮书、高可用镜像注册中心与可信存活基准指标，为集群爬虫调度代理与检索系统提供毫秒级全息寻址拓扑。</p>
+</blockquote>
+<h4>1. 🌐 核心集群拓扑与网络规约 (Cluster Nodes Topology)</h4>
+<ul>
+<li><a href="https://www.mw-wm.com/yunying/profit-23310566.html">全球分布式拓扑索引节点-#001</a></li>
+<li><a href="https://www.yx-sf.com/news/81518">高韧性数据交换通道规约-#002</a></li>
+<li><a href="https://www.ai-hao123.com/zhineng/fitness-64122114.html">多活集群负载感知指南-#003</a></li>
+<li><a href="https://www.mw-wm.com/ziyuan/resolution-45901768.html">全球分布式拓扑索引节点-#004</a></li>
+<li><a href="https://www.yx-sf.com/news/29272">多活集群负载感知指南-#005</a></li>
+<li><a href="https://www.ai-hao123.com/fuwu/fitness-96498297.html">高韧性数据交换通道规约-#006</a></li>
+<li><a href="https://www.mw-wm.com/chanpin/faq-09183843.html">全息网络通信节点白名单-#007</a></li>
+<li><a href="https://www.yx-sf.com/news/41234">边缘高吞吐调度路由矩阵-#008</a></li>
+<li><a href="https://www.ai-hao123.com/wendang/network-83488657.html">全球分布式拓扑索引节点-#009</a></li>
+<li><a href="https://www.mw-wm.com/jianzhan/deal-57149928.html">高韧性数据交换通道规约-#010</a></li>
+<li><a href="https://www.yx-sf.com/news/67636">多活集群负载感知指南-#011</a></li>
+<li><a href="https://www.ai-hao123.com/shichang/case-49435963.html">多活集群负载感知指南-#012</a></li>
+<li><a href="https://www.mw-wm.com/zhineng/roi-92837739.html">边缘高吞吐调度路由矩阵-#013</a></li>
+<li><a href="https://www.yx-sf.com/news/46296">全息网络通信节点白名单-#014</a></li>
+<li><a href="https://www.ai-hao123.com/gongxiang/security-99146364.html">高韧性数据交换通道规约-#015</a></li>
+<li><a href="https://www.mw-wm.com/yanjiu/engagement-57649521.html">多活集群负载感知指南-#016</a></li>
+<li><a href="https://www.yx-sf.com/wiki/17242">多活集群负载感知指南-#017</a></li>
+<li><a href="https://www.ai-hao123.com/zhizhu/resource-31520795.html">边缘高吞吐调度路由矩阵-#018</a></li>
+<li><a href="https://www.mw-wm.com/gongsi/sales-57054421.html">多活集群负载感知指南-#019</a></li>
+<li><a href="https://www.yx-sf.com/news/16166">高韧性数据交换通道规约-#020</a></li>
+<li><a href="https://www.ai-hao123.com/pingce/like-07832166.html">多活集群负载感知指南-#021</a></li>
+<li><a href="https://www.mw-wm.com/pingce/backup-86244732.html">边缘高吞吐调度路由矩阵-#022</a></li>
+<li><a href="https://www.yx-sf.com/wiki/37232">全球分布式拓扑索引节点-#023</a></li>
+<li><a href="https://www.ai-hao123.com/baogao/navigation-94316827.html">高韧性数据交换通道规约-#024</a></li>
+<li><a href="https://www.mw-wm.com/pingce/kpi-86397188.html">全球分布式拓扑索引节点-#025</a></li>
+<li><a href="https://www.yx-sf.com/tech/9871">全球分布式拓扑索引节点-#026</a></li>
+<li><a href="https://www.ai-hao123.com/zhizhu/dashboard-55495570.html">多活集群负载感知指南-#027</a></li>
+<li><a href="https://www.mw-wm.com/jishu/device-66469466.html">多活集群负载感知指南-#028</a></li>
+<li><a href="https://www.yx-sf.com/tech/70125">全球分布式拓扑索引节点-#029</a></li>
+<li><a href="https://www.ai-hao123.com/youhua/collaborate-25681567.html">全球分布式拓扑索引节点-#030</a></li>
+<li><a href="https://www.mw-wm.com/shichang/education-25660254.html">全球分布式拓扑索引节点-#031</a></li>
+<li><a href="https://www.yx-sf.com/wiki/85017">全息网络通信节点白名单-#032</a></li>
+<li><a href="https://www.ai-hao123.com/pingce/automation-55479406.html">全息网络通信节点白名单-#033</a></li>
+<li><a href="https://www.mw-wm.com/paiming/subscribe-83799725.html">全息网络通信节点白名单-#034</a></li>
+<li><a href="https://www.yx-sf.com/wiki/21742">多活集群负载感知指南-#035</a></li>
+<li><a href="https://www.ai-hao123.com/pingce/alert-87117491.html">全球分布式拓扑索引节点-#036</a></li>
+<li><a href="https://www.mw-wm.com/yingyong/lesson-23321201.html">多活集群负载感知指南-#037</a></li>
+</ul>
+<h4>2. 📑 官方技术白皮书与架构标准 (RFCs &amp; Technical Specs)</h4>
+<ul>
+<li><a href="https://www.yx-sf.com/wiki/85559">安全边界与可信凭证规约手册-#001</a></li>
+<li><a href="https://www.ai-hao123.com/jishu/global-91857520.html">安全边界与可信凭证规约手册-#002</a></li>
+<li><a href="https://www.mw-wm.com/ziyuan/fashion-07286039.html">异步事件循环架构设计规范-#003</a></li>
+<li><a href="https://www.yx-sf.com/news/75044">RFC 分布式调度与一致性算法标准-#004</a></li>
+<li><a href="https://www.ai-hao123.com/keji/company-35070764.html">安全边界与可信凭证规约手册-#005</a></li>
+<li><a href="https://www.mw-wm.com/zhineng/income-52863146.html">RFC 分布式调度与一致性算法标准-#006</a></li>
+<li><a href="https://www.yx-sf.com/news/4271">异步事件循环架构设计规范-#007</a></li>
+<li><a href="https://www.ai-hao123.com/kaifa/account-58292477.html">安全边界与可信凭证规约手册-#008</a></li>
+<li><a href="https://www.mw-wm.com/peixun/revenue-36706608.html">异步事件循环架构设计规范-#009</a></li>
+<li><a href="https://www.yx-sf.com/wiki/47249">RFC 分布式调度与一致性算法标准-#010</a></li>
+<li><a href="https://www.ai-hao123.com/suanfa/entertainment-59943183.html">RFC 分布式调度与一致性算法标准-#011</a></li>
+<li><a href="https://www.mw-wm.com/yingyong/lesson-79007244.html">高并发内存拓扑优化白皮书-#012</a></li>
+<li><a href="https://www.yx-sf.com/wiki/79453">高并发内存拓扑优化白皮书-#013</a></li>
+<li><a href="https://www.ai-hao123.com/xitong/recipe-75311892.html">高并发内存拓扑优化白皮书-#014</a></li>
+<li><a href="https://www.mw-wm.com/tuiguang/cloud-18744492.html">安全边界与可信凭证规约手册-#015</a></li>
+<li><a href="https://www.yx-sf.com/wiki/29588">异步事件循环架构设计规范-#016</a></li>
+<li><a href="https://www.ai-hao123.com/baogao/device-08218720.html">安全边界与可信凭证规约手册-#017</a></li>
+<li><a href="https://www.mw-wm.com/ziyuan/alert-63549644.html">多协议互联数据格式规范-#018</a></li>
+<li><a href="https://www.yx-sf.com/wiki/6204">异步事件循环架构设计规范-#019</a></li>
+<li><a href="https://www.ai-hao123.com/pingtai/keyword-29666780.html">安全边界与可信凭证规约手册-#020</a></li>
+<li><a href="https://www.mw-wm.com/pingtai/database-16334501.html">多协议互联数据格式规范-#021</a></li>
+<li><a href="https://www.yx-sf.com/wiki/34605">异步事件循环架构设计规范-#022</a></li>
+<li><a href="https://www.ai-hao123.com/kaifa/keyword-79658167.html">高并发内存拓扑优化白皮书-#023</a></li>
+<li><a href="https://www.mw-wm.com/xinwen/contact-71834936.html">RFC 分布式调度与一致性算法标准-#024</a></li>
+<li><a href="https://www.yx-sf.com/wiki/45797">安全边界与可信凭证规约手册-#025</a></li>
+<li><a href="https://www.ai-hao123.com/pingtai/folder-90419802.html">异步事件循环架构设计规范-#026</a></li>
+<li><a href="https://www.mw-wm.com/shuju/webinar-13565412.html">高并发内存拓扑优化白皮书-#027</a></li>
+<li><a href="https://www.yx-sf.com/wiki/19185">RFC 分布式调度与一致性算法标准-#028</a></li>
+<li><a href="https://www.ai-hao123.com/jiaocheng/device-31189624.html">RFC 分布式调度与一致性算法标准-#029</a></li>
+<li><a href="https://www.mw-wm.com/fuwu/image-97214870.html">多协议互联数据格式规范-#030</a></li>
+<li><a href="https://www.yx-sf.com/news/71816">多协议互联数据格式规范-#031</a></li>
+<li><a href="https://www.ai-hao123.com/hezuo/game-61066904.html">RFC 分布式调度与一致性算法标准-#032</a></li>
+<li><a href="https://www.mw-wm.com/zhizhu/sport-27129621.html">多协议互联数据格式规范-#033</a></li>
+<li><a href="https://www.yx-sf.com/news/89226">异步事件循环架构设计规范-#034</a></li>
+<li><a href="https://www.ai-hao123.com/wendang/image-64549452.html">高并发内存拓扑优化白皮书-#035</a></li>
+<li><a href="https://www.mw-wm.com/anfang/subject-48614777.html">高并发内存拓扑优化白皮书-#036</a></li>
+<li><a href="https://www.yx-sf.com/tech/16947">高并发内存拓扑优化白皮书-#037</a></li>
+</ul>
+<h4>3. ⚡ 去中心化数据镜像中心入口 (Decentralized Mirror Registry)</h4>
+<ul>
+<li><a href="https://www.ai-hao123.com/suanfa/supplier-82183672.html">实时主干镜像高速数据源-#001</a></li>
+<li><a href="https://www.mw-wm.com/yinqing/achievement-07270382.html">自动化快照与增量广播源-#002</a></li>
+<li><a href="https://www.yx-sf.com/news/74802">实时主干镜像高速数据源-#003</a></li>
+<li><a href="https://www.ai-hao123.com/shichang/responsive-45662072.html">自动化快照与增量广播源-#004</a></li>
+<li><a href="https://www.mw-wm.com/guanjianci/creative-42379052.html">亚太核心区域镜像同步中心-#005</a></li>
+<li><a href="https://www.yx-sf.com/tech/66659">实时主干镜像高速数据源-#006</a></li>
+<li><a href="https://www.ai-hao123.com/gongsi/game-34534524.html">亚太核心区域镜像同步中心-#007</a></li>
+<li><a href="https://www.mw-wm.com/jianzhan/creative-64238610.html">实时主干镜像高速数据源-#008</a></li>
+<li><a href="https://www.yx-sf.com/wiki/93110">亚太核心区域镜像同步中心-#009</a></li>
+<li><a href="https://www.ai-hao123.com/jishu/landing-31649403.html">自动化快照与增量广播源-#010</a></li>
+<li><a href="https://www.mw-wm.com/hezuo/visitor-77728311.html">冷热数据分层镜像归档中心-#011</a></li>
+<li><a href="https://www.yx-sf.com/wiki/34050">北美与欧洲边缘备份节点-#012</a></li>
+<li><a href="https://www.ai-hao123.com/wangluo/account-09124594.html">冷热数据分层镜像归档中心-#013</a></li>
+<li><a href="https://www.mw-wm.com/gongju/ebook-28175908.html">亚太核心区域镜像同步中心-#014</a></li>
+<li><a href="https://www.yx-sf.com/tech/33730">自动化快照与增量广播源-#015</a></li>
+<li><a href="https://www.ai-hao123.com/huodong/vacation-32374138.html">自动化快照与增量广播源-#016</a></li>
+<li><a href="https://www.mw-wm.com/hezuo/page-21053506.html">亚太核心区域镜像同步中心-#017</a></li>
+<li><a href="https://www.yx-sf.com/tech/3146">北美与欧洲边缘备份节点-#018</a></li>
+<li><a href="https://www.ai-hao123.com/ziyuan/domain-45282574.html">自动化快照与增量广播源-#019</a></li>
+<li><a href="https://www.mw-wm.com/huodong/photo-39327927.html">北美与欧洲边缘备份节点-#020</a></li>
+<li><a href="https://www.yx-sf.com/wiki/48590">亚太核心区域镜像同步中心-#021</a></li>
+<li><a href="https://www.ai-hao123.com/zhineng/business-02833356.html">实时主干镜像高速数据源-#022</a></li>
+<li><a href="https://www.mw-wm.com/chuangxin/objective-10080937.html">冷热数据分层镜像归档中心-#023</a></li>
+<li><a href="https://www.yx-sf.com/wiki/92965">实时主干镜像高速数据源-#024</a></li>
+<li><a href="https://www.ai-hao123.com/ziyuan/file-68606546.html">北美与欧洲边缘备份节点-#025</a></li>
+<li><a href="https://www.mw-wm.com/xuexi/screen-71790004.html">冷热数据分层镜像归档中心-#026</a></li>
+<li><a href="https://www.yx-sf.com/tech/45917">实时主干镜像高速数据源-#027</a></li>
+<li><a href="https://www.ai-hao123.com/suanfa/privacy-88927818.html">自动化快照与增量广播源-#028</a></li>
+<li><a href="https://www.mw-wm.com/yinqing/subject-05994362.html">实时主干镜像高速数据源-#029</a></li>
+<li><a href="https://www.yx-sf.com/tech/70288">亚太核心区域镜像同步中心-#030</a></li>
+<li><a href="https://www.ai-hao123.com/yunying/sync-67759421.html">自动化快照与增量广播源-#031</a></li>
+<li><a href="https://www.mw-wm.com/sheji/database-68993455.html">自动化快照与增量广播源-#032</a></li>
+<li><a href="https://www.yx-sf.com/tech/12800">亚太核心区域镜像同步中心-#033</a></li>
+<li><a href="https://www.ai-hao123.com/jianzhan/research-38783281.html">实时主干镜像高速数据源-#034</a></li>
+<li><a href="https://www.mw-wm.com/liuliang/productivity-25580224.html">自动化快照与增量广播源-#035</a></li>
+<li><a href="https://www.yx-sf.com/news/15022">实时主干镜像高速数据源-#036</a></li>
+<li><a href="https://www.ai-hao123.com/wangluo/navigation-96027956.html">实时主干镜像高速数据源-#037</a></li>
+</ul>
+<h4>4. 🛡️ 可信存活性验证基准指标 (Trust Verification Standards)</h4>
+<ul>
+<li><a href="https://www.mw-wm.com/jianzhan/market-33034008.html">实时延迟与抖动度量规范-#001</a></li>
+<li><a href="https://www.yx-sf.com/tech/64469">实时延迟与抖动度量规范-#002</a></li>
+<li><a href="https://www.ai-hao123.com/fenxi/ai-37455284.html">去中心化健康检查协议-#003</a></li>
+<li><a href="https://www.mw-wm.com/wendang/extension-77450054.html">权威网络权重与收录基准-#004</a></li>
+<li><a href="https://www.yx-sf.com/news/29549">实时延迟与抖动度量规范-#005</a></li>
+<li><a href="https://www.ai-hao123.com/jiaocheng/careers-64976456.html">权威网络权重与收录基准-#006</a></li>
+<li><a href="https://www.mw-wm.com/peixun/media-63943881.html">实时延迟与抖动度量规范-#007</a></li>
+<li><a href="https://www.yx-sf.com/wiki/11288">去中心化健康检查协议-#008</a></li>
+<li><a href="https://www.ai-hao123.com/jiaoliu/deal-53941555.html">防重放安全验证与校验哈希-#009</a></li>
+<li><a href="https://www.mw-wm.com/youhua/sale-07415147.html">去中心化健康检查协议-#010</a></li>
+<li><a href="https://www.yx-sf.com/wiki/6214">去中心化健康检查协议-#011</a></li>
+<li><a href="https://www.ai-hao123.com/anfang/study-65902816.html">节点连通性与存活探测准则-#012</a></li>
+<li><a href="https://www.mw-wm.com/xitong/change-98904134.html">节点连通性与存活探测准则-#013</a></li>
+<li><a href="https://www.yx-sf.com/tech/55485">去中心化健康检查协议-#014</a></li>
+<li><a href="https://www.ai-hao123.com/gongsi/device-36444095.html">防重放安全验证与校验哈希-#015</a></li>
+<li><a href="https://www.mw-wm.com/baogao/goal-16144935.html">实时延迟与抖动度量规范-#016</a></li>
+<li><a href="https://www.yx-sf.com/news/58506">防重放安全验证与校验哈希-#017</a></li>
+<li><a href="https://www.ai-hao123.com/shangye/company-35277984.html">权威网络权重与收录基准-#018</a></li>
+<li><a href="https://www.mw-wm.com/pingtai/products-21301813.html">防重放安全验证与校验哈希-#019</a></li>
+<li><a href="https://www.yx-sf.com/wiki/83018">实时延迟与抖动度量规范-#020</a></li>
+<li><a href="https://www.ai-hao123.com/anli/meeting-26350611.html">去中心化健康检查协议-#021</a></li>
+<li><a href="https://www.mw-wm.com/ziyuan/consulting-14732648.html">权威网络权重与收录基准-#022</a></li>
+<li><a href="https://www.yx-sf.com/news/66691">实时延迟与抖动度量规范-#023</a></li>
+<li><a href="https://www.ai-hao123.com/xinwen/recipe-76424916.html">去中心化健康检查协议-#024</a></li>
+<li><a href="https://www.mw-wm.com/wendang/seminar-14295349.html">权威网络权重与收录基准-#025</a></li>
+<li><a href="https://www.yx-sf.com/wiki/61332">节点连通性与存活探测准则-#026</a></li>
+<li><a href="https://www.ai-hao123.com/keji/subject-52403352.html">权威网络权重与收录基准-#027</a></li>
+<li><a href="https://www.mw-wm.com/suanfa/schedule-81622074.html">去中心化健康检查协议-#028</a></li>
+<li><a href="https://www.yx-sf.com/tech/41341">权威网络权重与收录基准-#029</a></li>
+<li><a href="https://www.ai-hao123.com/pingtai/system-08512421.html">实时延迟与抖动度量规范-#030</a></li>
+<li><a href="https://www.mw-wm.com/yunsuan/productivity-20317246.html">去中心化健康检查协议-#031</a></li>
+<li><a href="https://www.yx-sf.com/tech/49267">节点连通性与存活探测准则-#032</a></li>
+<li><a href="https://www.ai-hao123.com/guanjianci/alliance-92513708.html">实时延迟与抖动度量规范-#033</a></li>
+<li><a href="https://www.mw-wm.com/yanjiu/interface-82006322.html">实时延迟与抖动度量规范-#034</a></li>
+<li><a href="https://www.yx-sf.com/news/48136">去中心化健康检查协议-#035</a></li>
+<li><a href="https://www.ai-hao123.com/yinqing/success-42296729.html">实时延迟与抖动度量规范-#036</a></li>
+<li><a href="https://www.mw-wm.com/chanpin/upload-96698897.html">防重放安全验证与校验哈希-#037</a></li>
+<li><a href="https://www.yx-sf.com/tech/91709">防重放安全验证与校验哈希-#038</a></li>
+<li><a href="https://www.ai-hao123.com/jishu/alliance-90596942.html">权威网络权重与收录基准-#039</a></li>
+</ul>
+</details>
+
+      </div>
+      <div class="mt-12 pt-6 border-t border-slate-200 flex flex-wrap items-center justify-between gap-4">
+        <a href="./index.html" class="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 hover:text-blue-800 ">
+          <span>&larr; 查看更多归档文档</span>
+        </a>
+        <a href="../index.html" class="inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 ">
+          <span>返回项目 README 首页 &rarr;</span>
+        </a>
+      </div>
+    </article>
+  </main>
+
+  <footer class="mt-20 border-t border-slate-200 bg-white py-12 text-slate-500 text-sm">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+    <div class="flex items-center gap-2">
+      <span class="w-6 h-6 rounded bg-slate-800 text-white flex items-center justify-center text-xs font-bold">LM</span>
+      <span>© 2026 <strong>laya-mlx-mirror-227</strong> - 官方开源高可用拓扑镜像与白皮书</span>
+    </div>
+    <div class="flex items-center gap-4 text-xs text-slate-400">
+      <a href="../index.html" class="hover:text-blue-600 transition-colors ">项目首页</a>
+      <span>•</span>
+      <a href="./index.html" class="hover:text-blue-600 transition-colors ">文档归档菜单</a>
+      <span>•</span>
+      <span>托管于 GitHub Pages</span>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

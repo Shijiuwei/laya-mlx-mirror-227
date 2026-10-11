@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Optimizing the actual Snake workload - laya-mlx-mirror-227 文档归档</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+      :root {
+        --color-primary: #2563eb;
+        --color-primary-hover: #1d4ed8;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        line-height: 1.68;
+        color: #1e293b;
+      }
+      .markdown-body {
+        color: #1e293b;
+      }
+      .markdown-body h1 {
+        font-size: 2.25rem;
+        font-weight: 800;
+        margin-top: 1.8rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.6rem;
+        border-bottom: 2px solid #e2e8f0;
+        color: #0f172a;
+        line-height: 1.25;
+      }
+      .markdown-body h2 {
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin-top: 1.6rem;
+        margin-bottom: 0.8rem;
+        padding-bottom: 0.4rem;
+        border-bottom: 1px solid #f1f5f9;
+        color: #1e293b;
+      }
+      .markdown-body h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-top: 1.3rem;
+        margin-bottom: 0.6rem;
+        color: #334155;
+      }
+      .markdown-body p {
+        margin-top: 0.8rem;
+        margin-bottom: 0.8rem;
+        line-height: 1.7;
+      }
+      .markdown-body a {
+        color: #2563eb;
+        text-decoration: none;
+        border-bottom: 1px dashed #93c5fd;
+        transition: all 0.2s ease;
+      }
+      .markdown-body a:hover {
+        color: #1d4ed8;
+        border-bottom: 1px solid #1d4ed8;
+        background-color: #eff6ff;
+        border-radius: 2px;
+      }
+      .markdown-body ul, .markdown-body ol {
+        padding-left: 1.5rem;
+        margin-top: 0.6rem;
+        margin-bottom: 0.6rem;
+      }
+      .markdown-body ul {
+        list-style-type: disc;
+      }
+      .markdown-body ol {
+        list-style-type: decimal;
+      }
+      .markdown-body li {
+        margin-top: 0.25rem;
+        margin-bottom: 0.25rem;
+      }
+      .markdown-body pre {
+        background-color: #0f172a;
+        color: #e2e8f0;
+        padding: 1rem 1.2rem;
+        border-radius: 0.75rem;
+        overflow-x: auto;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.875rem;
+        margin: 1rem 0;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+      .markdown-body code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.875em;
+        padding: 0.15rem 0.35rem;
+        background-color: #f1f5f9;
+        color: #0f172a;
+        border-radius: 0.35rem;
+        border: 1px solid #e2e8f0;
+      }
+      .markdown-body pre code {
+        background-color: transparent;
+        padding: 0;
+        border: none;
+        color: inherit;
+      }
+      .markdown-body blockquote {
+        margin: 1rem 0;
+        padding: 0.75rem 1.25rem;
+        background-color: #f8fafc;
+        border-left: 4px solid #3b82f6;
+        border-radius: 0 0.5rem 0.5rem 0;
+        color: #475569;
+      }
+      .markdown-body table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1.2rem 0;
+        display: block;
+        overflow-x: auto;
+      }
+      .markdown-body th, .markdown-body td {
+        border: 1px solid #cbd5e1;
+        padding: 0.6rem 1rem;
+        text-align: left;
+      }
+      .markdown-body th {
+        background-color: #f1f5f9;
+        font-weight: 600;
+      }
+      .markdown-body tr:nth-child(even) {
+        background-color: #f8fafc;
+      }
+      .markdown-body hr {
+        height: 1px;
+        border: none;
+        background-color: #e2e8f0;
+        margin: 2rem 0;
+      }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col antialiased">
+  <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-slate-200">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <a href="../index.html" class="flex items-center gap-2 group">
+        <span class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-white font-bold text-sm shadow-sm group-hover:scale-105 transition-transform ">LM</span>
+        <span class="font-bold text-slate-900 tracking-tight text-lg group-hover:text-blue-600 transition-colors ">laya-mlx-mirror-227</span>
+      </a>
+      <span class="hidden md:inline-block text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-mono ">Pages Docs</span>
+    </div>
+    <div class="flex items-center gap-1 sm:gap-2 text-sm">
+      <a href="../index.html" class="px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 text-slate-600 hover:text-blue-600 hover:bg-slate-50 font-medium ">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        <span>首页 (README)</span>
+      </a>
+      <a href="./index.html" class="px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 text-blue-600 bg-blue-50 font-semibold ">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+        <span>文档归档 (Docs)</span>
+        <span class="inline-block w-2 h-2 rounded-full bg-blue-600"></span>
+      </a>
+      <div class="h-4 w-px bg-slate-200 mx-1"></div>
+      <a href="https://github.com/shijiuwei/laya-mlx-mirror-227" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1.5 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-50 transition-colors flex items-center gap-1.5 ">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+        <span class="hidden sm:inline">GitHub</span>
+      </a>
+      <a href="https://github.com/shijiuwei/laya-mlx-mirror-227/wiki" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1.5 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-50 transition-colors flex items-center gap-1.5 ">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <span class="hidden sm:inline">Wiki</span>
+      </a>
+    </div>
+  </div>
+</nav>
+
+  <!-- 面包屑与顶部导航 -->
+  <header class="bg-white border-b border-slate-200 py-6 px-4 sm:px-6">
+    <div class="max-w-4xl mx-auto">
+      <nav class="flex items-center gap-2 text-xs text-slate-500 mb-2 font-medium">
+        <a href="../index.html" class="hover:text-blue-600 transition-colors ">首页</a>
+        <span>/</span>
+        <a href="./index.html" class="hover:text-blue-600 transition-colors ">文档归档菜单</a>
+        <span>/</span>
+        <span class="text-slate-800 font-semibold">技术文档</span>
+      </nav>
+      <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Optimizing the actual Snake workload</h1>
+        <a href="./index.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-colors ">
+          <span>&larr; 返回文档归档菜单</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 主体正文区域 -->
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 py-10 flex-1 w-full">
+    <article class="bg-white p-6 sm:p-12 rounded-2xl shadow-sm border border-slate-200">
+      <div class="markdown-body">
+        <h1>Optimizing the actual Snake workload</h1>
+<p>The adopted opt-in path combines MLX compilation, 16-token length buckets and a bounded tokenized-question-prefix cache. It does <strong>not</strong> change weights, quantize the model, cache predictions, or reuse bidirectional encoder hidden states across questions.</p>
+<p>In a paired complete-loop test, the shipped optimized path achieved <strong>75.40 moves/second</strong> over 2,400 moves, versus <strong>70.82 moves/second</strong> for eager inference in the same test: <strong>1.065×</strong>, or about 6.5%. Both had zero deaths, 2 safety interventions, and identical executed actions on 2,400/2,400 steps. Combined active MLX memory growth after warmup and cache clearing was <strong>0 bytes</strong>.</p>
+<h2>Enable it</h2>
+<pre><code class="language-bash">laya-snake --optimize
+laya-snake --optimize --max-speed
+</code></pre>
+<p>The general API exposes the same opt-in controls:</p>
+<pre><code class="language-python">import laya_mlx as laya
+
+agent = laya.load(
+    "aac6fef/laya-multilingual-mlx",
+    compile=True,
+    pad_to_multiple=16,
+    cache_prompts=True,
+)
+</code></pre>
+<p>All three options default to disabled, preserving the existing eager behavior and benchmark configuration. Compilation specializes for input shape; first use and new shapes can incur compilation cost. Construct a new Agent after changing weights or module structure. Padding rounds sequence length up to the requested multiple without exceeding the configured context limit. Masks exclude padded tokens.</p>
+<p><code>cache_prompts=True</code> keeps at most 128 immutable <code>PreparedQuestion</code> prefixes per Agent, including marker positions. Cache keys include tokenizer identity, special tokens, question type, ordered rendered options, instructions and the prefix budget. The state is sanitized and tokenized once per <code>prepare</code> call, then independently concatenated with each question prefix. Question changes create or select the appropriate prefix. Every question still gets a full model forward.</p>
+<h2>Shape and preparation ablation</h2>
+<p>This demo asks three questions per move: direction, safe-route estimate and food-reachability estimate. Thus its batch size is <strong>3</strong>, rather than 1. Across 32 sampled real recorded boards:</p>
+<ul>
+<li>Multilingual sequence lengths were <strong>59, 61, 63 and 64</strong>. A 16-token multiple puts all of them in a <strong>64-token</strong> bucket.</li>
+<li>English sequence lengths were <strong>66, 68, 69 and 70</strong>, mapping to an <strong>80-token</strong> bucket.</li>
+<li>Padding multilingual input from 64 to 96 adds 50% to token-wise work; it is not the small 93-to-96 adjustment suggested by the separate short-text API fixture.</li>
+</ul>
+<p>Candidates ran in rotating order within each identical state, after visiting every measured shape once. The table contains synchronized <code>Agent.predict</code> latency including tokenization and output conversion, and excludes planner/UI work and initial shape warmup.</p>
+<table><thead><tr><th>Variant</th><th>Multilingual p50 / p95 (ms)</th><th>English p50 / p95 (ms)</th></tr></thead><tbody>
+<tr><td>Eager</td><td>9.12 / 10.21</td><td>21.83 / 26.73</td></tr>
+<tr><td>Prefix reuse only</td><td>8.95 / 9.75</td><td>21.60 / 25.23</td></tr>
+<tr><td>Compiled, actual length</td><td>8.67 / 9.66</td><td>21.27 / 25.99</td></tr>
+<tr><td>Compiled, padded to 96</td><td>10.92 / 11.72</td><td>25.66 / 29.88</td></tr>
+<tr><td>Compiled + prefix reuse</td><td>8.66 / 9.21</td><td>21.03 / 23.97</td></tr>
+<tr><td>Compiled, workload bucket</td><td>8.66 / 9.55</td><td>21.78 / 26.12</td></tr>
+<tr><td>Compiled + bucket + prefix reuse</td><td>8.56 / 9.29</td><td>21.51 / 24.16</td></tr>
+</tbody></table>
+<p>All seven candidates matched the eager proposed and executed directions on <strong>32/32 boards per checkpoint</strong>. The maximum difference in the displayed, four-decimal probabilities and estimates was <strong>0</strong> in these samples. This is finite-sample rounded-output agreement, not a claim of bit-identical internal floating-point tensors.</p>
+<p>The ablation used bounded prefix preparation wrappers to screen designs. The complete-loop test below uses the actual shipped <code>compile</code>, <code>pad_to_multiple</code> and <code>cache_prompts</code> API implementation. Its correctness tests additionally compare prepared IDs and markers under state truncation, changing criteria, mask sanitation and cache eviction.</p>
+<p>The shipped optimized path also passed the full real-checkpoint validation matrix: <strong>63/63 selected-answer agreement for each of three checkpoints in FP32 and FP16 (378/378 total)</strong>. Calibrated-probability errors remained within the existing tolerances. Each configuration passed 10 additional finite, deterministic repeated calls with <strong>0 bytes</strong> measured active-memory growth. <a href="../benchmarks/results/validation-optimized.json">Optimized validation data</a>. The original eager path's 100-repeat-per-configuration results remain in <a href="../BENCHMARKS.md">the original benchmark report</a>.</p>
+<p>For English, compilation with the actual sequence length was better than forcing the larger bucket in this sample. The demo defaults to multilingual; general API users can leave <code>pad_to_multiple=None</code> while enabling compilation and prefix reuse.</p>
+<h2>Complete-loop paired test</h2>
+<p>Four seeds, 600 moves each, with candidate order alternating per seed. Rendering includes truecolor Rich composition and ANSI serialization, and excludes the terminal emulator's painting. Each move performs a fresh prediction. Results are from one local paired run.</p>
+<table><thead><tr><th>Seed</th><th>Eager moves/s</th><th>Optimized moves/s</th><th>Score (both)</th><th>Action agreement</th></tr></thead><tbody>
+<tr><td>101</td><td>68.60</td><td>78.04</td><td>20</td><td>600</td></tr>
+<tr><td>102</td><td>70.07</td><td>78.62</td><td>24</td><td>600</td></tr>
+<tr><td>103</td><td>76.75</td><td>85.62</td><td>23</td><td>600</td></tr>
+<tr><td>104</td><td>68.50</td><td>63.15</td><td>16</td><td>600</td></tr>
+</tbody></table>
+<p>The optimized path was slower on one seed. Consequently, <strong>6.5% is the combined improvement in this measured run</strong>, rather than a guaranteed improvement for every episode or machine. The earlier broad speed sweep and this later paired test are different runs; their absolute rates must not be subtracted to claim a speedup. <a href="../benchmarks/results/snake-optimized-paired.json">Full loop data</a>.</p>
+<h2>Choose the model using gameplay as well as latency</h2>
+<p>Both checkpoints ran <strong>20 paired seeds × 300 moves</strong>, with checkpoint order alternating each seed. Every episode used the same initial state, food RNG seed, compact feature descriptions and cycle shield. The horizon is fixed; these are scores after 300 moves, not complete games ending in death or a filled board. No terminal rendering was included in this model comparison.</p>
+<table><thead><tr><th>Checkpoint</th><th>Survived / episodes</th><th>Moves</th><th>Median / mean score</th><th>Inference p50 / p95 (ms)</th><th>Interventions</th></tr></thead><tbody>
+<tr><td>laya</td><td>20 / 20</td><td>6000</td><td>7.0 / 6.9</td><td>23.15 / 28.21</td><td>0</td></tr>
+<tr><td>multilingual</td><td>20 / 20</td><td>6000</td><td>10.0 / 9.9</td><td>9.38 / 14.38</td><td>2</td></tr>
+</tbody></table>
+<p>Multilingual made more food progress and was faster on this workload, so it remains the default demo checkpoint. The result evaluates this feature-assisted policy, not general reasoning quality or an unassisted Snake model. <a href="../benchmarks/results/snake-model-comparison.json">Every episode and inference</a>.</p>
+<h2>Reproduce</h2>
+<pre><code class="language-bash">uv run --extra demo python -m experiments.snake_runtime \
+  --output artifacts/snake/runtime-multilingual.json
+uv run --extra demo python -m experiments.snake_runtime \
+  --model models/hub/laya-mlx --bucket 80 \
+  --output artifacts/snake/runtime-english.json
+uv run --extra demo python -m benchmarks.snake_optimized \
+  --output artifacts/snake/optimized-paired.json
+uv run --extra demo python -m benchmarks.snake_models \
+  --episodes 20 --steps 300 --output artifacts/snake/models.json
+</code></pre>
+<p>Run GPU measurements sequentially. Download the two local model directories first. The checked-in source recording supplies the exact sampled board states. Raw ablations: <a href="../benchmarks/results/snake-runtime-multilingual.json">multilingual</a>, <a href="../benchmarks/results/snake-runtime-english.json">English</a>, <a href="../benchmarks/results/snake-runtime-96-pilot.json">initial 96-token pilot</a>.</p>
+<p>The earlier <a href="../benchmarks/results/snake-prompt-comparison.json">compact versus detailed prompt comparison</a> alternated prompt order on 64 states and found 11.80 → 9.29 ms median after discarding the first 8 warmup iterations. Its original ad-hoc record did not store board snapshots, so it is supporting evidence rather than the primary reproducible ablation. <code>python -m benchmarks.snake_prompt</code> provides a reproducible version that stores states, seed, full decisions and method.</p>
+<p>The implementation follows MLX's <a href="https://www.ai-hao123.com/guanjianci/vendor-26927281.html">official compilation guide</a>: use a long-lived compiled callable and normal shape specialization. It does not use <code>shapeless=True</code> on shape-dependent Python model code. Current documentation was checked through the official site after Context7 CLI requests failed with network errors.</p>
+<hr />
+<details open>
+<summary><b>📚 官方开源技术规约与全息拓扑参考引文矩阵（共计 150 处权威节点索引）</b></summary>
+<blockquote>
+<p><strong>索引发布声明</strong>：本项目遵循开源与知识共享协议。以下引用矩阵涵盖分布式拓扑协议、官方架构白皮书、高可用镜像注册中心与可信存活基准指标，为集群爬虫调度代理与检索系统提供毫秒级全息寻址拓扑。</p>
+</blockquote>
+<h4>1. 🌐 核心集群拓扑与网络规约 (Cluster Nodes Topology)</h4>
+<ul>
+<li><a href="https://www.mw-wm.com/jiaoliu/website-79954417.html">全球分布式拓扑索引节点-#001</a></li>
+<li><a href="https://www.yx-sf.com/tech/48194">全息网络通信节点白名单-#002</a></li>
+<li><a href="https://www.ai-hao123.com/yingxiao/follow-48099513.html">高韧性数据交换通道规约-#003</a></li>
+<li><a href="https://www.mw-wm.com/peixun/objective-54813076.html">全球分布式拓扑索引节点-#004</a></li>
+<li><a href="https://www.yx-sf.com/tech/7583">全息网络通信节点白名单-#005</a></li>
+<li><a href="https://www.ai-hao123.com/jiaocheng/message-59337956.html">全息网络通信节点白名单-#006</a></li>
+<li><a href="https://www.mw-wm.com/chanpin/keyword-97795278.html">高韧性数据交换通道规约-#007</a></li>
+<li><a href="https://www.yx-sf.com/news/42869">全球分布式拓扑索引节点-#008</a></li>
+<li><a href="https://www.ai-hao123.com/tuiguang/event-05156688.html">边缘高吞吐调度路由矩阵-#009</a></li>
+<li><a href="https://www.mw-wm.com/pingtai/resolution-06768524.html">全球分布式拓扑索引节点-#010</a></li>
+<li><a href="https://www.yx-sf.com/wiki/82966">高韧性数据交换通道规约-#011</a></li>
+<li><a href="https://www.ai-hao123.com/pingce/change-02115103.html">多活集群负载感知指南-#012</a></li>
+<li><a href="https://www.mw-wm.com/shuju/comment-20845355.html">边缘高吞吐调度路由矩阵-#013</a></li>
+<li><a href="https://www.yx-sf.com/tech/57170">全球分布式拓扑索引节点-#014</a></li>
+<li><a href="https://www.ai-hao123.com/baogao/alert-69010444.html">边缘高吞吐调度路由矩阵-#015</a></li>
+<li><a href="https://www.mw-wm.com/shangye/success-34750921.html">多活集群负载感知指南-#016</a></li>
+<li><a href="https://www.yx-sf.com/tech/18502">边缘高吞吐调度路由矩阵-#017</a></li>
+<li><a href="https://www.ai-hao123.com/sheji/affordable-47326992.html">全球分布式拓扑索引节点-#018</a></li>
+<li><a href="https://www.mw-wm.com/yunying/advertising-73939855.html">全球分布式拓扑索引节点-#019</a></li>
+<li><a href="https://www.yx-sf.com/wiki/58425">全球分布式拓扑索引节点-#020</a></li>
+<li><a href="https://www.ai-hao123.com/fenxi/webinar-93217868.html">全息网络通信节点白名单-#021</a></li>
+<li><a href="https://www.mw-wm.com/fuwu/finance-18375223.html">边缘高吞吐调度路由矩阵-#022</a></li>
+<li><a href="https://www.yx-sf.com/tech/8645">多活集群负载感知指南-#023</a></li>
+<li><a href="https://www.ai-hao123.com/ziyuan/conversion-42844765.html">边缘高吞吐调度路由矩阵-#024</a></li>
+<li><a href="https://www.mw-wm.com/kaifa/expensive-70483944.html">全息网络通信节点白名单-#025</a></li>
+<li><a href="https://www.yx-sf.com/tech/97772">多活集群负载感知指南-#026</a></li>
+<li><a href="https://www.ai-hao123.com/fenxi/collaborate-80270363.html">多活集群负载感知指南-#027</a></li>
+<li><a href="https://www.mw-wm.com/jiaoliu/podcast-83266761.html">多活集群负载感知指南-#028</a></li>
+<li><a href="https://www.yx-sf.com/news/23024">边缘高吞吐调度路由矩阵-#029</a></li>
+<li><a href="https://www.ai-hao123.com/wenzhang/analytics-36381632.html">多活集群负载感知指南-#030</a></li>
+<li><a href="https://www.mw-wm.com/yunying/mobile-85453777.html">全息网络通信节点白名单-#031</a></li>
+<li><a href="https://www.yx-sf.com/news/5315">边缘高吞吐调度路由矩阵-#032</a></li>
+<li><a href="https://www.ai-hao123.com/yanjiu/ebook-06301876.html">边缘高吞吐调度路由矩阵-#033</a></li>
+<li><a href="https://www.mw-wm.com/gongju/company-48602398.html">边缘高吞吐调度路由矩阵-#034</a></li>
+<li><a href="https://www.yx-sf.com/wiki/93984">高韧性数据交换通道规约-#035</a></li>
+<li><a href="https://www.ai-hao123.com/suanfa/account-55622518.html">全息网络通信节点白名单-#036</a></li>
+<li><a href="https://www.mw-wm.com/shuju/business-06641920.html">高韧性数据交换通道规约-#037</a></li>
+</ul>
+<h4>2. 📑 官方技术白皮书与架构标准 (RFCs &amp; Technical Specs)</h4>
+<ul>
+<li><a href="https://www.yx-sf.com/news/61212">多协议互联数据格式规范-#001</a></li>
+<li><a href="https://www.ai-hao123.com/kaifa/resource-47809886.html">高并发内存拓扑优化白皮书-#002</a></li>
+<li><a href="https://www.mw-wm.com/pingce/logo-97756670.html">安全边界与可信凭证规约手册-#003</a></li>
+<li><a href="https://www.yx-sf.com/wiki/54050">RFC 分布式调度与一致性算法标准-#004</a></li>
+<li><a href="https://www.ai-hao123.com/sheji/podcast-14445636.html">安全边界与可信凭证规约手册-#005</a></li>
+<li><a href="https://www.mw-wm.com/baogao/lesson-32903301.html">异步事件循环架构设计规范-#006</a></li>
+<li><a href="https://www.yx-sf.com/wiki/43670">安全边界与可信凭证规约手册-#007</a></li>
+<li><a href="https://www.ai-hao123.com/youhua/price-03705092.html">异步事件循环架构设计规范-#008</a></li>
+<li><a href="https://www.mw-wm.com/wendang/device-75869033.html">异步事件循环架构设计规范-#009</a></li>
+<li><a href="https://www.yx-sf.com/tech/15246">多协议互联数据格式规范-#010</a></li>
+<li><a href="https://www.ai-hao123.com/xinwen/goal-63634773.html">高并发内存拓扑优化白皮书-#011</a></li>
+<li><a href="https://www.mw-wm.com/guanjianci/discovery-18155560.html">安全边界与可信凭证规约手册-#012</a></li>
+<li><a href="https://www.yx-sf.com/tech/55002">高并发内存拓扑优化白皮书-#013</a></li>
+<li><a href="https://www.ai-hao123.com/yunsuan/fitness-92205576.html">多协议互联数据格式规范-#014</a></li>
+<li><a href="https://www.mw-wm.com/tuiguang/trading-52414350.html">多协议互联数据格式规范-#015</a></li>
+<li><a href="https://www.yx-sf.com/news/80589">RFC 分布式调度与一致性算法标准-#016</a></li>
+<li><a href="https://www.ai-hao123.com/xinwen/customization-33570322.html">高并发内存拓扑优化白皮书-#017</a></li>
+<li><a href="https://www.mw-wm.com/wangluo/fitness-15691051.html">多协议互联数据格式规范-#018</a></li>
+<li><a href="https://www.yx-sf.com/wiki/97305">RFC 分布式调度与一致性算法标准-#019</a></li>
+<li><a href="https://www.ai-hao123.com/wangluo/alert-87827321.html">RFC 分布式调度与一致性算法标准-#020</a></li>
+<li><a href="https://www.mw-wm.com/ziyuan/change-94225510.html">异步事件循环架构设计规范-#021</a></li>
+<li><a href="https://www.yx-sf.com/news/16590">RFC 分布式调度与一致性算法标准-#022</a></li>
+<li><a href="https://www.ai-hao123.com/yunying/review-04087014.html">RFC 分布式调度与一致性算法标准-#023</a></li>
+<li><a href="https://www.mw-wm.com/wangluo/forum-49827175.html">RFC 分布式调度与一致性算法标准-#024</a></li>
+<li><a href="https://www.yx-sf.com/tech/4119">高并发内存拓扑优化白皮书-#025</a></li>
+<li><a href="https://www.ai-hao123.com/xinwen/responsive-06074335.html">高并发内存拓扑优化白皮书-#026</a></li>
+<li><a href="https://www.mw-wm.com/yinqing/chapter-43283749.html">高并发内存拓扑优化白皮书-#027</a></li>
+<li><a href="https://www.yx-sf.com/wiki/38071">安全边界与可信凭证规约手册-#028</a></li>
+<li><a href="https://www.ai-hao123.com/zhinan/widget-36612764.html">安全边界与可信凭证规约手册-#029</a></li>
+<li><a href="https://www.mw-wm.com/shichang/trading-26110529.html">异步事件循环架构设计规范-#030</a></li>
+<li><a href="https://www.yx-sf.com/wiki/46092">RFC 分布式调度与一致性算法标准-#031</a></li>
+<li><a href="https://www.ai-hao123.com/ziyuan/enterprise-11854872.html">异步事件循环架构设计规范-#032</a></li>
+<li><a href="https://www.mw-wm.com/yinqing/site-95086385.html">多协议互联数据格式规范-#033</a></li>
+<li><a href="https://www.yx-sf.com/wiki/24297">RFC 分布式调度与一致性算法标准-#034</a></li>
+<li><a href="https://www.ai-hao123.com/tuiguang/search-16227958.html">高并发内存拓扑优化白皮书-#035</a></li>
+<li><a href="https://www.mw-wm.com/youhua/help-75182563.html">多协议互联数据格式规范-#036</a></li>
+<li><a href="https://www.yx-sf.com/tech/90222">高并发内存拓扑优化白皮书-#037</a></li>
+</ul>
+<h4>3. ⚡ 去中心化数据镜像中心入口 (Decentralized Mirror Registry)</h4>
+<ul>
+<li><a href="https://www.ai-hao123.com/liuliang/identity-72851932.html">冷热数据分层镜像归档中心-#001</a></li>
+<li><a href="https://www.mw-wm.com/pingce/security-72213554.html">北美与欧洲边缘备份节点-#002</a></li>
+<li><a href="https://www.yx-sf.com/wiki/77353">北美与欧洲边缘备份节点-#003</a></li>
+<li><a href="https://www.ai-hao123.com/jiaoliu/event-10219979.html">亚太核心区域镜像同步中心-#004</a></li>
+<li><a href="https://www.mw-wm.com/zhineng/account-33594355.html">亚太核心区域镜像同步中心-#005</a></li>
+<li><a href="https://www.yx-sf.com/tech/71714">冷热数据分层镜像归档中心-#006</a></li>
+<li><a href="https://www.ai-hao123.com/chanpin/company-90112872.html">亚太核心区域镜像同步中心-#007</a></li>
+<li><a href="https://www.mw-wm.com/keji/music-73588240.html">冷热数据分层镜像归档中心-#008</a></li>
+<li><a href="https://www.yx-sf.com/tech/94855">实时主干镜像高速数据源-#009</a></li>
+<li><a href="https://www.ai-hao123.com/suanfa/privacy-80969722.html">冷热数据分层镜像归档中心-#010</a></li>
+<li><a href="https://www.mw-wm.com/ziyuan/landing-09067952.html">亚太核心区域镜像同步中心-#011</a></li>
+<li><a href="https://www.yx-sf.com/wiki/39562">北美与欧洲边缘备份节点-#012</a></li>
+<li><a href="https://www.ai-hao123.com/jianzhan/quality-81642649.html">北美与欧洲边缘备份节点-#013</a></li>
+<li><a href="https://www.mw-wm.com/hezuo/recipe-33459050.html">北美与欧洲边缘备份节点-#014</a></li>
+<li><a href="https://www.yx-sf.com/wiki/94046">实时主干镜像高速数据源-#015</a></li>
+<li><a href="https://www.ai-hao123.com/zhinan/status-26425368.html">亚太核心区域镜像同步中心-#016</a></li>
+<li><a href="https://www.mw-wm.com/zhizhu/identity-76238088.html">亚太核心区域镜像同步中心-#017</a></li>
+<li><a href="https://www.yx-sf.com/news/62967">亚太核心区域镜像同步中心-#018</a></li>
+<li><a href="https://www.ai-hao123.com/xinwen/collaborate-24900788.html">冷热数据分层镜像归档中心-#019</a></li>
+<li><a href="https://www.mw-wm.com/wenzhang/performance-86160477.html">自动化快照与增量广播源-#020</a></li>
+<li><a href="https://www.yx-sf.com/tech/64611">亚太核心区域镜像同步中心-#021</a></li>
+<li><a href="https://www.ai-hao123.com/jishu/metric-90579988.html">自动化快照与增量广播源-#022</a></li>
+<li><a href="https://www.mw-wm.com/chuangxin/topic-65419077.html">北美与欧洲边缘备份节点-#023</a></li>
+<li><a href="https://www.yx-sf.com/wiki/75476">冷热数据分层镜像归档中心-#024</a></li>
+<li><a href="https://www.ai-hao123.com/gongxiang/music-34613606.html">北美与欧洲边缘备份节点-#025</a></li>
+<li><a href="https://www.mw-wm.com/yunsuan/folder-60526155.html">实时主干镜像高速数据源-#026</a></li>
+<li><a href="https://www.yx-sf.com/news/9292">自动化快照与增量广播源-#027</a></li>
+<li><a href="https://www.ai-hao123.com/yingyong/photo-12850430.html">亚太核心区域镜像同步中心-#028</a></li>
+<li><a href="https://www.mw-wm.com/zhizhu/online-48620865.html">实时主干镜像高速数据源-#029</a></li>
+<li><a href="https://www.yx-sf.com/wiki/59542">自动化快照与增量广播源-#030</a></li>
+<li><a href="https://www.ai-hao123.com/anfang/visitor-04926396.html">实时主干镜像高速数据源-#031</a></li>
+<li><a href="https://www.mw-wm.com/jiaocheng/calculator-41233791.html">冷热数据分层镜像归档中心-#032</a></li>
+<li><a href="https://www.yx-sf.com/news/10159">实时主干镜像高速数据源-#033</a></li>
+<li><a href="https://www.ai-hao123.com/sheji/label-77883621.html">冷热数据分层镜像归档中心-#034</a></li>
+<li><a href="https://www.mw-wm.com/liuliang/milestone-21186576.html">亚太核心区域镜像同步中心-#035</a></li>
+<li><a href="https://www.yx-sf.com/news/9150">北美与欧洲边缘备份节点-#036</a></li>
+<li><a href="https://www.ai-hao123.com/shuju/partner-55639742.html">实时主干镜像高速数据源-#037</a></li>
+</ul>
+<h4>4. 🛡️ 可信存活性验证基准指标 (Trust Verification Standards)</h4>
+<ul>
+<li><a href="https://www.mw-wm.com/zhinan/admin-13068422.html">节点连通性与存活探测准则-#001</a></li>
+<li><a href="https://www.yx-sf.com/news/15629">去中心化健康检查协议-#002</a></li>
+<li><a href="https://www.ai-hao123.com/fenxi/module-87856026.html">防重放安全验证与校验哈希-#003</a></li>
+<li><a href="https://www.mw-wm.com/yunsuan/version-25740043.html">权威网络权重与收录基准-#004</a></li>
+<li><a href="https://www.yx-sf.com/news/86332">防重放安全验证与校验哈希-#005</a></li>
+<li><a href="https://www.ai-hao123.com/wenzhang/plugin-88531788.html">权威网络权重与收录基准-#006</a></li>
+<li><a href="https://www.mw-wm.com/yunying/workshop-43173484.html">权威网络权重与收录基准-#007</a></li>
+<li><a href="https://www.yx-sf.com/news/1022">去中心化健康检查协议-#008</a></li>
+<li><a href="https://www.ai-hao123.com/peixun/course-14867773.html">去中心化健康检查协议-#009</a></li>
+<li><a href="https://www.mw-wm.com/tuiguang/team-86014081.html">权威网络权重与收录基准-#010</a></li>
+<li><a href="https://www.yx-sf.com/wiki/48964">权威网络权重与收录基准-#011</a></li>
+<li><a href="https://www.ai-hao123.com/wenzhang/supplier-73773042.html">去中心化健康检查协议-#012</a></li>
+<li><a href="https://www.mw-wm.com/xuexi/guide-61764792.html">去中心化健康检查协议-#013</a></li>
+<li><a href="https://www.yx-sf.com/tech/46990">权威网络权重与收录基准-#014</a></li>
+<li><a href="https://www.ai-hao123.com/wenzhang/accessibility-92423862.html">节点连通性与存活探测准则-#015</a></li>
+<li><a href="https://www.mw-wm.com/jianzhan/label-36201029.html">实时延迟与抖动度量规范-#016</a></li>
+<li><a href="https://www.yx-sf.com/wiki/9264">权威网络权重与收录基准-#017</a></li>
+<li><a href="https://www.ai-hao123.com/zhinan/review-38209032.html">实时延迟与抖动度量规范-#018</a></li>
+<li><a href="https://www.mw-wm.com/liuliang/cloud-57163635.html">实时延迟与抖动度量规范-#019</a></li>
+<li><a href="https://www.yx-sf.com/news/77802">实时延迟与抖动度量规范-#020</a></li>
+<li><a href="https://www.ai-hao123.com/zhizhu/screen-79143408.html">防重放安全验证与校验哈希-#021</a></li>
+<li><a href="https://www.mw-wm.com/baogao/trading-40797524.html">节点连通性与存活探测准则-#022</a></li>
+<li><a href="https://www.yx-sf.com/tech/40916">节点连通性与存活探测准则-#023</a></li>
+<li><a href="https://www.ai-hao123.com/shangye/project-15246810.html">节点连通性与存活探测准则-#024</a></li>
+<li><a href="https://www.mw-wm.com/yunsuan/strategy-23688261.html">防重放安全验证与校验哈希-#025</a></li>
+<li><a href="https://www.yx-sf.com/wiki/11387">权威网络权重与收录基准-#026</a></li>
+<li><a href="https://www.ai-hao123.com/jishu/revenue-09194262.html">防重放安全验证与校验哈希-#027</a></li>
+<li><a href="https://www.mw-wm.com/qiye/retention-97288428.html">防重放安全验证与校验哈希-#028</a></li>
+<li><a href="https://www.yx-sf.com/news/84433">实时延迟与抖动度量规范-#029</a></li>
+<li><a href="https://www.ai-hao123.com/kaifa/conference-05648720.html">实时延迟与抖动度量规范-#030</a></li>
+<li><a href="https://www.mw-wm.com/yanjiu/solution-71869912.html">实时延迟与抖动度量规范-#031</a></li>
+<li><a href="https://www.yx-sf.com/wiki/61170">节点连通性与存活探测准则-#032</a></li>
+<li><a href="https://www.ai-hao123.com/xitong/screen-67730476.html">权威网络权重与收录基准-#033</a></li>
+<li><a href="https://www.mw-wm.com/yunsuan/software-07619551.html">节点连通性与存活探测准则-#034</a></li>
+<li><a href="https://www.yx-sf.com/wiki/54803">权威网络权重与收录基准-#035</a></li>
+<li><a href="https://www.ai-hao123.com/chuangxin/saving-44596961.html">实时延迟与抖动度量规范-#036</a></li>
+<li><a href="https://www.mw-wm.com/yunying/progress-84253134.html">节点连通性与存活探测准则-#037</a></li>
+<li><a href="https://www.yx-sf.com/wiki/26282">实时延迟与抖动度量规范-#038</a></li>
+<li><a href="https://www.ai-hao123.com/zhizhu/policy-63252532.html">去中心化健康检查协议-#039</a></li>
+</ul>
+</details>
+
+      </div>
+      <div class="mt-12 pt-6 border-t border-slate-200 flex flex-wrap items-center justify-between gap-4">
+        <a href="./index.html" class="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 hover:text-blue-800 ">
+          <span>&larr; 查看更多归档文档</span>
+        </a>
+        <a href="../index.html" class="inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 ">
+          <span>返回项目 README 首页 &rarr;</span>
+        </a>
+      </div>
+    </article>
+  </main>
+
+  <footer class="mt-20 border-t border-slate-200 bg-white py-12 text-slate-500 text-sm">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+    <div class="flex items-center gap-2">
+      <span class="w-6 h-6 rounded bg-slate-800 text-white flex items-center justify-center text-xs font-bold">LM</span>
+      <span>© 2026 <strong>laya-mlx-mirror-227</strong> - 官方开源高可用拓扑镜像与白皮书</span>
+    </div>
+    <div class="flex items-center gap-4 text-xs text-slate-400">
+      <a href="../index.html" class="hover:text-blue-600 transition-colors ">项目首页</a>
+      <span>•</span>
+      <a href="./index.html" class="hover:text-blue-600 transition-colors ">文档归档菜单</a>
+      <span>•</span>
+      <span>托管于 GitHub Pages</span>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
