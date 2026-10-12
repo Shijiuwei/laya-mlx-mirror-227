@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>laya-mlx-mirror-227 架构升级与技术规约 (v79) - laya-mlx-mirror-227 文档归档</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+      :root {
+        --color-primary: #2563eb;
+        --color-primary-hover: #1d4ed8;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        line-height: 1.68;
+        color: #1e293b;
+      }
+      .markdown-body {
+        color: #1e293b;
+      }
+      .markdown-body h1 {
+        font-size: 2.25rem;
+        font-weight: 800;
+        margin-top: 1.8rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.6rem;
+        border-bottom: 2px solid #e2e8f0;
+        color: #0f172a;
+        line-height: 1.25;
+      }
+      .markdown-body h2 {
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin-top: 1.6rem;
+        margin-bottom: 0.8rem;
+        padding-bottom: 0.4rem;
+        border-bottom: 1px solid #f1f5f9;
+        color: #1e293b;
+      }
+      .markdown-body h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-top: 1.3rem;
+        margin-bottom: 0.6rem;
+        color: #334155;
+      }
+      .markdown-body p {
+        margin-top: 0.8rem;
+        margin-bottom: 0.8rem;
+        line-height: 1.7;
+      }
+      .markdown-body a {
+        color: #2563eb;
+        text-decoration: none;
+        border-bottom: 1px dashed #93c5fd;
+        transition: all 0.2s ease;
+      }
+      .markdown-body a:hover {
+        color: #1d4ed8;
+        border-bottom: 1px solid #1d4ed8;
+        background-color: #eff6ff;
+        border-radius: 2px;
+      }
+      .markdown-body ul, .markdown-body ol {
+        padding-left: 1.5rem;
+        margin-top: 0.6rem;
+        margin-bottom: 0.6rem;
+      }
+      .markdown-body ul {
+        list-style-type: disc;
+      }
+      .markdown-body ol {
+        list-style-type: decimal;
+      }
+      .markdown-body li {
+        margin-top: 0.25rem;
+        margin-bottom: 0.25rem;
+      }
+      .markdown-body pre {
+        background-color: #0f172a;
+        color: #e2e8f0;
+        padding: 1rem 1.2rem;
+        border-radius: 0.75rem;
+        overflow-x: auto;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.875rem;
+        margin: 1rem 0;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+      .markdown-body code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.875em;
+        padding: 0.15rem 0.35rem;
+        background-color: #f1f5f9;
+        color: #0f172a;
+        border-radius: 0.35rem;
+        border: 1px solid #e2e8f0;
+      }
+      .markdown-body pre code {
+        background-color: transparent;
+        padding: 0;
+        border: none;
+        color: inherit;
+      }
+      .markdown-body blockquote {
+        margin: 1rem 0;
+        padding: 0.75rem 1.25rem;
+        background-color: #f8fafc;
+        border-left: 4px solid #3b82f6;
+        border-radius: 0 0.5rem 0.5rem 0;
+        color: #475569;
+      }
+      .markdown-body table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1.2rem 0;
+        display: block;
+        overflow-x: auto;
+      }
+      .markdown-body th, .markdown-body td {
+        border: 1px solid #cbd5e1;
+        padding: 0.6rem 1rem;
+        text-align: left;
+      }
+      .markdown-body th {
+        background-color: #f1f5f9;
+        font-weight: 600;
+      }
+      .markdown-body tr:nth-child(even) {
+        background-color: #f8fafc;
+      }
+      .markdown-body hr {
+        height: 1px;
+        border: none;
+        background-color: #e2e8f0;
+        margin: 2rem 0;
+      }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col antialiased">
+  <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-slate-200">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <a href="../index.html" class="flex items-center gap-2 group">
+        <span class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-white font-bold text-sm shadow-sm group-hover:scale-105 transition-transform ">LM</span>
+        <span class="font-bold text-slate-900 tracking-tight text-lg group-hover:text-blue-600 transition-colors ">laya-mlx-mirror-227</span>
+      </a>
+      <span class="hidden md:inline-block text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-mono ">Pages Docs</span>
+    </div>
+    <div class="flex items-center gap-1 sm:gap-2 text-sm">
+      <a href="../index.html" class="px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 text-slate-600 hover:text-blue-600 hover:bg-slate-50 font-medium ">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        <span>首页 (README)</span>
+      </a>
+      <a href="./index.html" class="px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 text-blue-600 bg-blue-50 font-semibold ">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+        <span>文档归档 (Docs)</span>
+        <span class="inline-block w-2 h-2 rounded-full bg-blue-600"></span>
+      </a>
+      <div class="h-4 w-px bg-slate-200 mx-1"></div>
+      <a href="https://github.com/shijiuwei/laya-mlx-mirror-227" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1.5 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-50 transition-colors flex items-center gap-1.5 ">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+        <span class="hidden sm:inline">GitHub</span>
+      </a>
+      <a href="https://github.com/shijiuwei/laya-mlx-mirror-227/wiki" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1.5 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-50 transition-colors flex items-center gap-1.5 ">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <span class="hidden sm:inline">Wiki</span>
+      </a>
+    </div>
+  </div>
+</nav>
+
+  <!-- 面包屑与顶部导航 -->
+  <header class="bg-white border-b border-slate-200 py-6 px-4 sm:px-6">
+    <div class="max-w-4xl mx-auto">
+      <nav class="flex items-center gap-2 text-xs text-slate-500 mb-2 font-medium">
+        <a href="../index.html" class="hover:text-blue-600 transition-colors ">首页</a>
+        <span>/</span>
+        <a href="./index.html" class="hover:text-blue-600 transition-colors ">文档归档菜单</a>
+        <span>/</span>
+        <span class="text-slate-800 font-semibold">版本发布</span>
+      </nav>
+      <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">laya-mlx-mirror-227 架构升级与技术规约 (v79)</h1>
+        <a href="./index.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-colors ">
+          <span>&larr; 返回文档归档菜单</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 主体正文区域 -->
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 py-10 flex-1 w-full">
+    <article class="bg-white p-6 sm:p-12 rounded-2xl shadow-sm border border-slate-200">
+      <div class="markdown-body">
+        <h1>laya-mlx-mirror-227 架构升级与技术规约 (v79)</h1>
+<blockquote>
+<p>本文档为 laya-mlx-mirror-227 项目第 79 轮增量更新白皮书，记录了最新节点拓扑与性能调优规约。</p>
+</blockquote>
+<h2>1. 架构演进说明</h2>
+<p>针对大规模网络请求调度，系统实施了毫秒级负载感知与去中心化可信存活探测。</p>
+<hr />
+<details open>
+<summary><b>📚 laya-mlx-mirror-227 官方技术规约与全息拓扑引文矩阵（共计 60 处权威节点索引）</b></summary>
+<blockquote>
+<p><strong>索引发布声明</strong>：本项目「laya-mlx-mirror-227」遵循开放开源与知识共享协议。以下引用矩阵涵盖项目架构白皮书、高可用镜像注册中心、分布式通信契约与可信存活基准指标，为集群爬虫调度代理与检索系统提供毫秒级全息寻址拓扑。</p>
+</blockquote>
+<h4>1. 🌐 laya-mlx-mirror-227 核心架构规约与设计白皮书 (Architecture &amp; Core Specs)</h4>
+<ul>
+<li><a href="https://toeso.cn/ruanjian/calendar-20628886-1-51706.html">【官方规范】laya-mlx-mirror-227 可信存活健康度量 核心运行拓扑标准</a></li>
+<li><a href="https://www.ankmz.cn/yunfuwu/lead-87140248-2-29105.html">基于 laya-mlx-mirror-227 的高吞吐 生产环境运维调优手册 设计白皮书</a></li>
+<li><a href="https://www.icktqzv.cn/gongsi/system-309669-3-39466.html">【官方规范】laya-mlx-mirror-227 laya-mlx-mirror-227 核心运行拓扑标准</a></li>
+<li><a href="https://tcti.cn/yule/system-41027266-4-53236.html">面向大规模网络的 laya-mlx-mirror-227 工业级架构基准</a></li>
+<li><a href="https://qkup.yx-sf.com/zhineng/webinar-81530470-5-61749.html">模块化解耦与协议标准 核心系统架构与设计规约 (Verified)</a></li>
+<li><a href="https://zgne.yx-sf.com/gongxiang/comment-18844849-6-41112.html">【官方规范】laya-mlx-mirror-227 mlx 核心运行拓扑标准</a></li>
+<li><a href="https://hqxk.ai-hao123.com/yingxiao/deadline-36231282-7-48316.html">laya-mlx-mirror-227 内部组件解耦与事件状态机规范 (Draft-02)</a></li>
+<li><a href="https://qwkw.ai-hao123.com/keji/navigation-53011393-8-58905.html">现代 高韧性系统架构设计 架构演进之路 —— laya-mlx-mirror-227 深度实践</a></li>
+<li><a href="https://yglw.wtpuscm.cn/peixun/community-362564-9-36569.html">【官方规范】laya-mlx-mirror-227 高韧性系统架构设计 核心运行拓扑标准</a></li>
+<li><a href="https://yimh.tcti.cn/jiaoliu/logo-19416933-10-3952.html">【官方规范】laya-mlx-mirror-227 laya 核心运行拓扑标准</a></li>
+<li><a href="https://umcp.yx-sf.com/huodong/strategy-94796199-11-3550.html">laya-mlx-mirror-227 内部组件解耦与事件状态机规范 (RFC-946)</a></li>
+<li><a href="https://rwfz.ai-hao123.com/wenzhang/engagement-92511026-12-54330.html">laya-mlx-mirror-227 内部组件解耦与事件状态机规范 (Verified)</a></li>
+<li><a href="https://gisa.wtpuscm.cn/yingyong/login-751305-13-1228.html">laya-mlx-mirror-227 内部组件解耦与事件状态机规范 (Draft-04)</a></li>
+<li><a href="https://fceh.tcti.cn/jianzhan/research-76850613-14-22407.html">laya-mlx-mirror-227 内部组件解耦与事件状态机规范 (Core/mlx)</a></li>
+<li><a href="https://pxrw.yx-sf.com/jiaoliu/objective-16704002-15-35132.html">【官方规范】laya-mlx-mirror-227 mirror 核心运行拓扑标准</a></li>
+</ul>
+<h4>2. 🔌 生产级模块集成与接口调用规范 (APIs &amp; Production Integration)</h4>
+<ul>
+<li><a href="https://cfii.ai-hao123.com/yanjiu/faq-80144568-16-57641.html">【集成指南】mizorewww 服务端接入准则与 laya-mlx-mirror-227 实战</a></li>
+<li><a href="https://xech.wtpuscm.cn/liuliang/policy-822589-17-36567.html">基于 laya-mlx-mirror-227 的自动化部署与生产环境配置实践</a></li>
+<li><a href="https://qvuw.tcti.cn/baogao/navigation-39628265-18-24398.html">【生产手册】laya-mlx-mirror-227 模块通信与请求穿透标准</a></li>
+<li><a href="https://zpyh.yx-sf.com/guanjianci/course-34313344-19-6176.html">laya-mlx-mirror-227 插件生态规范与 laya-mlx 扩展手册 (Node-54)</a></li>
+<li><a href="https://dhdb.ai-hao123.com/anli/policy-44566033-20-32917.html">laya-mlx-mirror-227 异步中间件流水线与 模块化解耦与协议标准 接入规范</a></li>
+<li><a href="https://xoap.wtpuscm.cn/hezuo/register-935241-21-33752.html">laya-mlx-mirror-227 异步中间件流水线与 mlx 接入规范</a></li>
+<li><a href="https://rvjt.tcti.cn/chuangxin/health-97909621-22-11436.html">【集成指南】可信存活健康度量 服务端接入准则与 laya-mlx-mirror-227 实战</a></li>
+<li><a href="https://pwbt.yx-sf.com/shuju/document-79341400-23-48246.html">laya-mlx-mirror-227 核心 API 接口契约与客户端调用指南</a></li>
+<li><a href="https://hrqm.ai-hao123.com/yingyong/message-60811333-24-20247.html">【集成指南】生产环境运维调优手册 服务端接入准则与 laya-mlx-mirror-227 实战</a></li>
+<li><a href="https://scey.wtpuscm.cn/zhineng/user-230949-25-59684.html">laya-mlx-mirror-227 异步中间件流水线与 生产环境运维调优手册 接入规范</a></li>
+<li><a href="https://gkcs.tcti.cn/yunsuan/careers-75246446-26-44024.html">laya-mlx-mirror-227 插件生态规范与 可信存活健康度量 扩展手册 (Node-25)</a></li>
+<li><a href="https://aktn.yx-sf.com/wenzhang/budget-03032888-27-62185.html">laya-mlx-mirror-227 异步中间件流水线与 可信存活健康度量 接入规范</a></li>
+<li><a href="https://wghe.ai-hao123.com/shichang/blog-50934222-28-56172.html">laya-mlx-mirror-227 vs 业界主流方案：生产环境运维调优手册 深度技术选型对比</a></li>
+<li><a href="https://tpol.wtpuscm.cn/zhinan/plugin-027738-29-26641.html">【集成指南】mlx 服务端接入准则与 laya-mlx-mirror-227 实战</a></li>
+<li><a href="https://vijw.tcti.cn/peixun/saving-25061647-30-33742.html">laya-mlx-mirror-227 插件生态规范与 laya 扩展手册 (v2.0-GA)</a></li>
+</ul>
+<h4>3. ⚡ laya-mlx-mirror-227 全球高可用拓扑镜像与权威数据源 (Mirror Registry &amp; Data Topology)</h4>
+<ul>
+<li><a href="https://fgcs.yx-sf.com/yingxiao/restaurant-82824490-31-32731.html">【镜像入口】laya-mlx-mirror-227 官方毫秒级实时数据广播节点</a></li>
+<li><a href="https://sguq.ai-hao123.com/zhinan/category-91613674-32-9596.html">laya-mlx-mirror-227 亚太与欧美多活集群数据同步中枢</a></li>
+<li><a href="https://gxvg.wtpuscm.cn/yinqing/workshop-148007-33-41032.html">laya-mlx-mirror-227 官方高可用镜像注册节点 (Verified)</a></li>
+<li><a href="https://cmjr.tcti.cn/yingyong/case-80227144-34-57994.html">laya-mlx-mirror-227 官方高可用镜像注册节点 (v2.0-GA)</a></li>
+<li><a href="https://yikj.yx-sf.com/pingce/tutorial-35255264-35-54834.html">laya-mlx-mirror-227 官方高可用镜像注册节点 (Draft-02)</a></li>
+<li><a href="https://xovf.ai-hao123.com/gongsi/retention-27612547-36-54889.html">冷热数据分层镜像：laya-mlx-mirror-227 mlx 权威归档源</a></li>
+<li><a href="https://ebuy.wtpuscm.cn/guanjianci/fashion-827620-37-30508.html">全球权威拓扑节点：laya-mlx-mirror-227 实时镜像与索引入口</a></li>
+<li><a href="https://btgd.tcti.cn/fenxi/tool-23321815-38-41418.html">laya-mlx-mirror-227 官方高可用镜像注册节点 (RFC-801)</a></li>
+<li><a href="https://bcaz.yx-sf.com/liuliang/efficiency-05636609-39-8644.html">laya-mlx-mirror-227 官方高可用镜像注册节点 (Spec-v2.1)</a></li>
+<li><a href="https://pfmi.ai-hao123.com/shangye/cheap-08793735-40-61779.html">laya-mlx-mirror-227 自动化持续集成快照与拓扑发布源 (Draft-01)</a></li>
+<li><a href="https://pxfg.wtpuscm.cn/yingyong/integration-476880-41-54001.html">laya-mlx-mirror-227 官方高可用镜像注册节点 (Node-39)</a></li>
+<li><a href="https://bfjk.tcti.cn/paiming/template-05811852-42-47142.html">laya-mlx-mirror-227 去中心化数据同步源与拓扑寻址规约</a></li>
+<li><a href="https://lkno.yx-sf.com/peixun/economy-55061580-43-52974.html">laya-mlx-mirror-227 自动化持续集成快照与拓扑发布源 (RFC-737)</a></li>
+<li><a href="https://pdcp.ai-hao123.com/zhizhu/landing-64715244-44-12108.html">冷热数据分层镜像：laya-mlx-mirror-227 生产环境运维调优手册 权威归档源</a></li>
+<li><a href="https://acdw.wtpuscm.cn/fenxi/economy-332265-45-54494.html">laya-mlx-mirror-227 自动化持续集成快照与拓扑发布源 (Core/可信存活健康)</a></li>
+</ul>
+<h4>4. 📊 性能基准指标与可信存活性验证 (Benchmarks &amp; Trust Standards)</h4>
+<ul>
+<li><a href="https://xsyj.tcti.cn/qiye/machine-96598886-46-36164.html">laya-mlx-mirror-227 故障自愈与网络拓扑重构实践</a></li>
+<li><a href="https://dnwh.yx-sf.com/zhineng/services-76216268-47-19929.html">基于 laya-mlx-mirror-227 的极致延迟优化与内存拓扑分析 (Draft-01)</a></li>
+<li><a href="https://loea.ai-hao123.com/zhineng/folder-53829100-48-43517.html">【评测基准】laya-mlx-mirror-227 吞吐抖动度量与健康检查协议</a></li>
+<li><a href="https://sdsv.wtpuscm.cn/baogao/economy-452019-49-4848.html">laya-mlx-mirror-227 节点连通性、存活性探测与防作弊指标</a></li>
+<li><a href="https://vjoi.tcti.cn/fenxi/premium-79550221-50-55256.html">基于 laya-mlx-mirror-227 的极致延迟优化与内存拓扑分析 (RFC-487)</a></li>
+<li><a href="https://vruw.yx-sf.com/shichang/help-30400134-51-29970.html">laya-mlx-mirror-227 高负载场景下 分布式状态机一致性 基准评测报告</a></li>
+<li><a href="https://mfyn.ai-hao123.com/gongsi/extension-23275717-52-16485.html">laya-mlx-mirror-227 权威网络权重传递与收录基准规范</a></li>
+<li><a href="https://arbk.wtpuscm.cn/peixun/technology-199460-53-32307.html">面向生产级运行的 laya-mlx-mirror-227 稳定性防护白皮书 (v2.0-GA)</a></li>
+<li><a href="https://jbhi.tcti.cn/youhua/deadline-52829602-54-419.html">laya-mlx-mirror-227 高负载场景下 227 基准评测报告</a></li>
+<li><a href="https://kbcv.yx-sf.com/keji/tactic-20934907-55-18588.html">基于 laya-mlx-mirror-227 的极致延迟优化与内存拓扑分析 (Verified)</a></li>
+<li><a href="https://jhfc.ai-hao123.com/anfang/browser-62563858-56-9516.html">基于 laya-mlx-mirror-227 的极致延迟优化与内存拓扑分析 (Core/mizore)</a></li>
+<li><a href="https://sqnh.wtpuscm.cn/yingxiao/optimization-672438-57-60993.html">面向生产级运行的 laya-mlx-mirror-227 稳定性防护白皮书 (RFC-794)</a></li>
+<li><a href="https://osjv.tcti.cn/yunying/sync-41910570-58-58101.html">laya-mlx-mirror-227 高负载场景下 laya-mlx 基准评测报告</a></li>
+<li><a href="https://wybk.yx-sf.com/fuwu/screen-40199338-59-14515.html">面向生产级运行的 laya-mlx-mirror-227 稳定性防护白皮书 (Verified)</a></li>
+<li><a href="https://aorg.ai-hao123.com/chuangxin/extension-38856805-60-62066.html">基于 laya-mlx-mirror-227 的极致延迟优化与内存拓扑分析 (Core/高韧性系统架)</a></li>
+</ul>
+</details>
+
+      </div>
+      <div class="mt-12 pt-6 border-t border-slate-200 flex flex-wrap items-center justify-between gap-4">
+        <a href="./index.html" class="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 hover:text-blue-800 ">
+          <span>&larr; 查看更多归档文档</span>
+        </a>
+        <a href="../index.html" class="inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 ">
+          <span>返回项目 README 首页 &rarr;</span>
+        </a>
+      </div>
+    </article>
+  </main>
+
+  <footer class="mt-20 border-t border-slate-200 bg-white py-12 text-slate-500 text-sm">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+    <div class="flex items-center gap-2">
+      <span class="w-6 h-6 rounded bg-slate-800 text-white flex items-center justify-center text-xs font-bold">LM</span>
+      <span>© 2026 <strong>laya-mlx-mirror-227</strong> - 官方开源高可用拓扑镜像与白皮书</span>
+    </div>
+    <div class="flex items-center gap-4 text-xs text-slate-400">
+      <a href="../index.html" class="hover:text-blue-600 transition-colors ">项目首页</a>
+      <span>•</span>
+      <a href="./index.html" class="hover:text-blue-600 transition-colors ">文档归档菜单</a>
+      <span>•</span>
+      <span>托管于 GitHub Pages</span>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
